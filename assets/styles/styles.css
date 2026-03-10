@@ -1,0 +1,540 @@
+.navbar_Logo{
+    background-color: #0f172a;
+    /* Un color ligeramente más claro que el fondo para que resalte */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar_Logo .Logo_NAV path{
+    /* Color del entorno*/
+    fill: rgb(0, 115, 255);
+}
+
+.navbar_Logo .texto_nav{
+    /* Aplicar la fuente */
+    font-family: 'Inter', sans-serif;
+    /* Grosor de la letra (Negrita fuerte) */
+    font-weight: 800;
+    /* Tamaño aproximado */
+    font-size: 1.5rem;
+    /* Espaciado entre letras ligeramente reducido para dar ese look de logo */
+    letter-spacing: -0.02em;
+    /* Color blanco puro */
+    color: #ffffff;
+}
+
+main{
+    background-color: #0f172a;
+    flex: 1; /* Ocupa el espacio disponible entre header y footer */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Todas las etiquetas parrafos del main*/
+main p{
+    /* Aplicar la fuente */
+    font-family: 'Inter', sans-serif;
+    /* Tamaño aproximado */
+    font-size: 1rem;
+    /* Espaciado entre letras ligeramente reducido para dar ese look de logo */
+    letter-spacing: -0.02em;
+    /* Color blanco puro */
+    color: rgb(148, 163, 184);
+}
+
+/*Todos los H1 del main*/
+main h1{
+    /* Aplicar la fuente */
+    font-family: 'Inter', sans-serif;
+    /* Grosor de la letra (Negrita fuerte) */
+    font-weight: 800;
+    /* Tamaño aproximado */
+    font-size: 1.25rem;
+    /* Espaciado entre letras ligeramente reducido para dar ese look de logo */
+    letter-spacing: -0.02em;
+    /* Color blanco puro */
+    color: #ffffff;
+}
+
+main .input_font{
+    /* 1. Fuente y Color */
+    font-family: 'Inter', sans-serif;
+    color: #ffffff; /* Blanco puro para que resalte */
+    /* 2. Grosor (La clave del estilo) */
+    font-weight: 700; /* Un Bold fuerte */
+    /* 3. Tamaño y Espaciado */
+    font-size: 0.95rem; /* Un poco más pequeña que el título principal */
+    display: block; /* Para que ocupe su propia línea */
+    margin-bottom: 8px; /* Espacio exacto con el cuadro de texto */
+    /* 4. Suavizado de fuente */
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.01em; /* Un toque de tracking para que se vea moderna */
+
+    
+}
+
+main input {
+    width: 100%;
+    background-color: #0f172a; /* Fondo oscuro igual al fondo general */
+    border: 1px solid #334155;
+    padding: 12px; 
+    border-radius: 8px;
+    margin-bottom: 20px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Color del texto sugerido (placeholder) */
+main input::placeholder {
+    color: #64748b;
+}
+
+/* Efecto cuando haces clic para escribir */
+main input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+
+/* Botón Principal (Azul) */
+main .btn-admin {
+    background-color: #2563eb;
+    color: #ffffff; /* Texto blanco */
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px; /* Bordes redondeados */
+    font-weight: 700;   /* Letra gruesa como en la imagen */
+    width: 100%;        /* Para que ocupe todo el ancho */
+}
+
+main .btn-admin:hover {
+    background-color: #1d4ed8; /* Un azul más oscuro al pasar el mouse */
+}
+
+main .btn-user {
+    background-color: #334155;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px; /* Separación entre botones */
+}
+
+main .btn-user:hover {
+    background-color: #1e293b;
+}
+
+
+.login-card {
+    background-color: #1e293b; /* Un tono más claro que el fondo general */
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px; /* Evita que se estire a los lados */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); /* Sombra para profundidad */
+    border: 1px solid #334155; /* Borde sutil para definición */
+}
+
+footer {
+    background-color: #0f172a;
+    color: #64748b;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+}
+
+
+
+.admin_panel{
+background-color: #0f172a;
+min-height: calc(100vh - 140px);
+padding: 40px 0;
+}
+
+
+.search_input{
+background-color:#1e293b;
+border:1px solid #334155;
+color:white;
+}
+
+
+.stats_card{
+background:#1e293b;
+border:1px solid #334155;
+border-radius:12px;
+padding:25px;
+}
+
+
+.stats_card p{
+color:#94a3b8;
+margin:0;
+}
+
+
+.stats_card h2{
+color:white;
+font-weight:800;
+margin-top:5px;
+}
+
+
+.table_card{
+background:#1e293b;
+border:1px solid #334155;
+border-radius:12px;
+padding:20px;
+}
+
+
+.estado_activo{
+background:#16a34a;
+}
+
+
+.estado_inactivo{
+background:#475569;
+}
+
+
+body{
+margin:0;
+display:flex;
+flex-direction:column;
+min-height:100vh;
+background-color:#0f172a;
+}
+
+
+/* NAVBAR */
+
+.navbar_Logo{
+background-color:#0f172a;
+border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+
+.navbar_Logo .Logo_NAV path{
+fill:rgb(0,115,255);
+}
+
+
+.navbar_Logo .texto_nav{
+font-family:'Inter',sans-serif;
+font-weight:800;
+font-size:1.5rem;
+letter-spacing:-0.02em;
+color:#ffffff;
+}
+
+
+
+/* MAIN */
+
+main{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+background-color:#0f172a;
+}
+
+
+main p{
+font-family:'Inter',sans-serif;
+font-size:1rem;
+letter-spacing:-0.02em;
+color:rgb(148,163,184);
+}
+
+
+main h1{
+font-family:'Inter',sans-serif;
+font-weight:800;
+font-size:1.3rem;
+letter-spacing:-0.02em;
+color:#ffffff;
+}
+
+
+
+/* LABELS */
+
+main .input_font{
+font-family:'Inter',sans-serif;
+color:#ffffff;
+font-weight:700;
+font-size:0.95rem;
+display:block;
+margin-bottom:8px;
+letter-spacing:-0.01em;
+}
+
+
+
+/* INPUT */
+
+main input{
+width:100%;
+background-color:#0f172a;
+border:1px solid #334155;
+padding:12px;
+border-radius:8px;
+outline:none;
+font-family:'Inter',sans-serif;
+color:white;
+}
+
+
+main input::placeholder{
+color:#64748b;
+}
+
+
+main input:focus{
+border-color:#3b82f6;
+box-shadow:0 0 0 2px rgba(59,130,246,0.2);
+}
+
+
+
+/* BOTONES */
+
+.btn-admin{
+background-color:#2563eb;
+color:#ffffff;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+font-weight:700;
+width:100%;
+margin-top:10px;
+}
+
+
+.btn-admin:hover{
+background-color:#1d4ed8;
+}
+
+
+.btn-user{
+background-color:#334155;
+color:#ffffff;
+border:none;
+padding:12px 20px;
+border-radius:8px;
+font-weight:700;
+cursor:pointer;
+}
+
+
+.btn-user:hover{
+background-color:#1e293b;
+}
+
+/* Estilos para tabs */
+.nav-tabs {
+    border-bottom: 1px solid #334155;
+}
+
+.nav-tabs .nav-link {
+    color: #94a3b8;
+    border: none;
+    background: none;
+    padding: 12px 24px;
+    font-weight: 600;
+}
+
+.nav-tabs .nav-link.active {
+    color: #ffffff;
+    background-color: #1e293b;
+    border-radius: 8px 8px 0 0;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.tab-content {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 20px;
+}
+
+/* Estilos para consulta_panel */
+.consulta_panel {
+    background-color: #1e293b;
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    border: 1px solid #334155;
+}
+
+.consulta_botones {
+    margin-bottom: 30px;
+}
+
+.consulta_individual {
+    margin-bottom: 30px;
+}
+
+.consulta_individual .input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.consulta_individual input {
+    flex: 1;
+}
+
+.resultado_consulta {
+    margin-top: 30px;
+}
+
+.resultado_consulta h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+/* Estilos para tablas en resultados */
+.resultado_consulta table {
+    margin-top: 20px;
+}
+
+.resultado_consulta .table th {
+    background-color: #0f172a;
+    color: #ffffff;
+    border-color: #334155;
+}
+
+.resultado_consulta .table td {
+    border-color: #334155;
+    color: #ffffff;
+}
+
+.resultado_consulta .badge {
+    font-size: 0.8em;
+}
+
+
+
+/* PANEL */
+
+.consulta_panel{
+background-color:#1e293b;
+padding:2.5rem;
+border-radius:12px;
+width:100%;
+max-width:600px;
+box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);
+border:1px solid #334155;
+}
+
+
+.consulta_botones{
+margin-top:20px;
+margin-bottom:30px;
+}
+
+
+.consulta_individual{
+margin-bottom:30px;
+}
+
+
+.consulta_individual .input-group button{
+margin-left:10px;
+}
+
+
+
+/* RESULTADO */
+
+.resultado_consulta{
+background:#0f172a;
+border:1px solid #334155;
+border-radius:10px;
+padding:20px;
+min-height:150px;
+}
+
+
+.resultado_consulta h2{
+font-size:1rem;
+margin-bottom:15px;
+color:white;
+}
+
+
+
+/* TARJETA USUARIO */
+
+.user_card{
+background:#1e293b;
+border:1px solid #334155;
+border-radius:10px;
+padding:15px;
+margin-bottom:10px;
+}
+
+
+.user_card p{
+margin:0;
+color:white;
+}
+
+
+
+/* FOOTER */
+
+footer{
+background-color:#0f172a;
+color:#64748b;
+text-align:center;
+padding:20px;
+font-family:'Inter',sans-serif;
+font-size:0.85rem;
+}
+
+.titulo_h4{
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.logo_cul{
+    background-image: url(../Images/logo_cul.png);
+    background-size: contain; /* Mantiene proporción sin cortar */
+    background-position: center;
+    background-repeat: no-repeat;
+    position: fixed; /* Fija en la pantalla */
+    bottom: -80px; /* Desde abajo */
+    right: 0; /* Desde la derecha */
+    width: 300px; /* Más grande para ocupar esquina */
+    height: 300px;
+    opacity: 0.5;
+    z-index: 999; /* Ahora al frente para probar */
+    pointer-events: none; /* No interfiere con clics */
+}
+
+.logo_cub{
+    background-image: url(../Images/logo_cub.png);
+    background-size: contain;
+    width: 40px;
+    height: 80px;
+}

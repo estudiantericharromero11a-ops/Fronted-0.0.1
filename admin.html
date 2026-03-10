@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin - Gestión Universitaria</title>
+
+    <link rel="stylesheet" href="assets/styles/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/Images/favicon.png">
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar_Logo">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="80" viewBox="0 0 16 16" class="Logo_NAV">
+                        <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866z"/>
+                    </svg>
+                    <span class="texto_nav">Panel Admin</span>
+                </a>
+
+                <div class="ms-auto d-flex gap-3 align-items-center">
+                    <button class="btn btn-primary fw-bold px-3" onclick="window.location.href='index.html'">Cerrar Sesión</button>
+                </div>
+            </div>
+        </nav>
+        <!--Logo Cul-->
+        <div class="logo_cul"></div>
+    </header>
+
+    <main class="admin_panel">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1>Gestión Universitaria</h1>
+                    <p>Administra personas, materias y programas académicos del sistema universitario.</p>
+                </div>
+
+                <div class="d-flex gap-2">
+                </div>
+            </div>
+
+            <!-- CARDS DE ESTADÍSTICAS UNIVERSITARIAS -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Personas</p>
+                        <h2 id="totalPersonas">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Materias</p>
+                        <h2 id="totalMaterias">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Programas</p>
+                        <h2 id="totalProgramas">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Instalaciones</p>
+                        <h2 id="totalInstalaciones">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Campus</p>
+                        <h2 id="totalCampus">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Roles</p>
+                        <h2 id="totalRoles">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Bloques</p>
+                        <h2 id="totalBloques">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Áreas Funcionales</p>
+                        <h2 id="totalAreasFuncionales">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Horarios Instalación</p>
+                        <h2 id="totalHorariosInstalacion">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Estados Instalación</p>
+                        <h2 id="totalEstadoInstalacion">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS PARA LAS 13 TABLAS DE LA UNIVERSIDAD -->
+            <ul class="nav nav-tabs mb-4" id="dataTabs" role="tablist">
+                <!-- ENTIDADES PRINCIPALES (6) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="personas-tab" data-bs-toggle="tab" data-bs-target="#personas" type="button" role="tab">Personas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="materias-tab" data-bs-toggle="tab" data-bs-target="#materias" type="button" role="tab">Materias</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="programas-tab" data-bs-toggle="tab" data-bs-target="#programas" type="button" role="tab">Programas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="instalaciones-tab" data-bs-toggle="tab" data-bs-target="#instalaciones" type="button" role="tab">Instalaciones</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="campus-tab" data-bs-toggle="tab" data-bs-target="#campus" type="button" role="tab">Campus</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="roles-tab" data-bs-toggle="tab" data-bs-target="#roles" type="button" role="tab">Roles</button>
+                </li>
+                
+                <!-- TABLAS PUENTE (3) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="personas-roles-tab" data-bs-toggle="tab" data-bs-target="#personas-roles" type="button" role="tab">Persona-Rol</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="programas-materias-tab" data-bs-toggle="tab" data-bs-target="#programas-materias" type="button" role="tab">Programa-Materia</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="asignacion-tab" data-bs-toggle="tab" data-bs-target="#asignacion" type="button" role="tab">Asignación-Instalaciones</button>
+                </li>
+                
+                <!-- CATÁLOGOS/REFERENCIAS (4) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bloques-tab" data-bs-toggle="tab" data-bs-target="#bloques" type="button" role="tab">Bloques</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="areas-tab" data-bs-toggle="tab" data-bs-target="#areas" type="button" role="tab">Áreas Funcionales</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="horarios-tab" data-bs-toggle="tab" data-bs-target="#horarios" type="button" role="tab">Horarios Instalación</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="estados-tab" data-bs-toggle="tab" data-bs-target="#estados" type="button" role="tab">Estados Instalación</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="dataTabsContent">
+                <!-- TABLA PERSONAS (Estudiantes, Docentes, Administrativos) -->
+                <div class="tab-pane fade show active" id="personas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Personas</h4>
+                            <button class="btn btn-primary" onclick="showAddPersonaModal()">Agregar Persona</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="personasTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Documento</th>
+                                    <th>Correo</th>
+                                    <th>Teléfono</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="personasTableBody">
+                                <!-- Las personas se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA MATERIAS (Asignaturas) -->
+                <div class="tab-pane fade" id="materias" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Materias</h4>
+                            <button class="btn btn-success" onclick="showAddMateriaModal()"> Agregar Materia</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="materiasTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Créditos</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materiasTableBody">
+                                <!-- Las materias se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PROGRAMAS (Carreras Académicas) -->
+                <div class="tab-pane fade" id="programas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Programas</h4>
+                            <button class="btn btn-info" onclick="showAddProgramaModal()"> Agregar Programa</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="programasTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Duración</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="programasTableBody">
+                                <!-- Los programas se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA INSTALACIONES (Aulas, Laboratorios, etc.) -->
+                <div class="tab-pane fade" id="instalaciones" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Instalaciones</h4>
+                            <button class="btn btn-warning" onclick="showAddInstalacionModal()"> Agregar Instalación</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="instalacionesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Piso</th>
+                                    <th>Capacidad</th>
+                                    <th>ID Bloque</th>
+                                    <th>ID Área</th>
+                                    <th>ID Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="instalacionesTableBody">
+                                <!-- Las instalaciones se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA CAMPUS (Sedes Universitarias) -->
+                <div class="tab-pane fade" id="campus" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Campus</h4>
+                            <button class="btn btn-secondary" onclick="showAddCampusModal()"> Agregar Campus</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="campusTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campusTableBody">
+                                <!-- Los campus se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ROLES (Estudiante, Docente, Administrativo) -->
+                <div class="tab-pane fade" id="roles" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Roles</h4>
+                            <button class="btn btn-danger" onclick="showAddRolModal()"> Agregar Rol</button>
+                        </div>
+
+                        <table class="table table-dark table-hover align-middle" id="rolesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rolesTableBody">
+                                <!-- Los roles se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PERSONA-ROL (Asignación de roles a personas) -->
+                <div class="tab-pane fade" id="personas-roles" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Asignación Persona-Rol</h4>
+                            <button class="btn btn-info" onclick="showAddPersonaRolModal()"> Asignar Rol</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="personaRolTable">
+                            <thead>
+                                <tr>
+                                    <th>ID Persona</th>
+                                    <th>ID Rol</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="personaRolTableBody">
+                                <!-- Las asignaciones se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PROGRAMA-MATERIA (Materias por programa) -->
+                <div class="tab-pane fade" id="programas-materias" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Asignación Programa-Materia</h4>
+                            <button class="btn btn-success" onclick="showAddProgramaMateriaModal()"> Asignar Materia</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="programaMateriaTable">
+                            <thead>
+                                <tr>
+                                    <th>ID Programa</th>
+                                    <th>ID Materia</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="programaMateriaTableBody">
+                                <!-- Las asignaciones se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ASIGNACION-INSTALACIONES (Instalaciones por campus) -->
+                <div class="tab-pane fade" id="asignacion" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Asignación Instalación-Campus</h4>
+                            <button class="btn btn-warning" onclick="showAddAsignacionInstalacionesModal()"> Asignar Instalación</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="asignacionInstalacionesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Instalación</th>
+                                    <th>ID Materia</th>
+                                    <th>Día Semana</th>
+                                    <th>ID Persona</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="asignacionInstalacionesTableBody">
+                                <!-- Las asignaciones se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA BLOQUES (Bloques de construcción) -->
+                <div class="tab-pane fade" id="bloques" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Bloques</h4>
+                            <button class="btn btn-primary" onclick="showAddBloqueModal()"> Agregar Bloque</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="bloquesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>ID Campus</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bloquesTableBody">
+                                <!-- Los bloques se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA AREAS FUNCIONALES (Áreas funcionales del sistema) -->
+                <div class="tab-pane fade" id="areas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Áreas Funcionales</h4>
+                            <button class="btn btn-success" onclick="showAddAreaFuncionalModal()"> Agregar Área</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="areasFuncionalesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="areasFuncionalesTableBody">
+                                <!-- Las áreas funcionales se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA HORARIOS INSTALACION (Horarios de disponibilidad) -->
+                <div class="tab-pane fade" id="horarios" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Horarios de Instalación</h4>
+                            <button class="btn btn-warning" onclick="showAddHorarioInstalacionModal()"> Agregar Horario</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="horariosInstalacionTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Instalación</th>
+                                    <th>Día</th>
+                                    <th>Hora Apertura</th>
+                                    <th>Hora Cierre</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="horariosInstalacionTableBody">
+                                <!-- Los horarios se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ESTADO INSTALACION (Estados de las instalaciones) -->
+                <div class="tab-pane fade" id="estados" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Gestión de Estados de Instalación</h4>
+                            <button class="btn btn-danger" onclick="showAddEstadoInstalacionModal()"> Agregar Estado</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle" id="estadoInstalacionTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="estadoInstalacionTableBody">
+                                <!-- Los estados se cargarán aquí -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Richar Romero. Todos los derechos reservados.</p>
+    </footer>
+
+    <!-- MODAL PARA PERSONAS -->
+    <div class="modal fade" id="personaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="personaModalTitle">Agregar Persona</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="personaForm">
+                        <input type="hidden" id="personaId">
+
+                        <div class="mb-3">
+                            <label for="personaNombre" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="personaNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="personaDocumento" class="form-label">Documento</label>
+                            <input type="text" class="form-control" id="personaDocumento" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="personaCorreo" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="personaCorreo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="personaTelefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="personaTelefono">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="savePersona()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA MATERIAS -->
+    <div class="modal fade" id="materiaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="materiaModalTitle">Agregar Materia</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="materiaForm">
+                        <input type="hidden" id="materiaId">
+
+                        <div class="mb-3">
+                            <label for="materiaNombre" class="form-label">Nombre de la Materia</label>
+                            <input type="text" class="form-control" id="materiaNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="materiaCreditos" class="form-label">Créditos</label>
+                            <input type="number" class="form-control" id="materiaCreditos" min="1" max="10">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="materiaDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="materiaDescripcion" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="saveMateria()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA PROGRAMAS -->
+    <div class="modal fade" id="programaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="programaModalTitle">Agregar Programa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="programaForm">
+                        <input type="hidden" id="programaId">
+
+                        <div class="mb-3">
+                            <label for="programaNombre" class="form-label">Nombre del Programa</label>
+                            <input type="text" class="form-control" id="programaNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="programaTipo" class="form-label">Tipo de Programa</label>
+                            <select class="form-control" id="programaTipo">
+                                <option value="">-- Seleccionar --</option>
+                                <option value="pregrado">Pregrado</option>
+                                <option value="posgrado">Posgrado</option>
+                                <option value="diplomado">Diplomado</option>
+                                <option value="curso">Curso</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="programaDuracion" class="form-label">Duración (Semestres)</label>
+                            <input type="number" class="form-control" id="programaDuracion" min="1" max="20">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" onclick="savePrograma()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA INSTALACIONES -->
+    <div class="modal fade" id="instalacionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="instalacionModalTitle">Agregar Instalación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="instalacionForm">
+                        <input type="hidden" id="instalacionId">
+
+                        <div class="mb-3">
+                            <label for="instalacionNombre" class="form-label">Nombre de la Instalación</label>
+                            <input type="text" class="form-control" id="instalacionNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionTipo" class="form-label">Tipo de Instalación</label>
+                            <select class="form-control" id="instalacionTipo">
+                                <option value="">-- Seleccionar --</option>
+                                <option value="aula">Aula</option>
+                                <option value="laboratorio">Laboratorio</option>
+                                <option value="auditorio">Auditorio</option>
+                                <option value="biblioteca">Biblioteca</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionCapacidad" class="form-label">Capacidad</label>
+                            <input type="number" class="form-control" id="instalacionCapacidad" min="1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionPiso" class="form-label">Piso</label>
+                            <input type="number" class="form-control" id="instalacionPiso" min="0">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionIdBloque" class="form-label">ID Bloque</label>
+                            <input type="number" class="form-control" id="instalacionIdBloque" min="1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionArea" class="form-label">ID Área</label>
+                            <input type="number" class="form-control" id="instalacionArea" min="1">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="instalacionIdEstado" class="form-label">ID Estado</label>
+                            <input type="number" class="form-control" id="instalacionIdEstado" min="1">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="saveInstalacion()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA CAMPUS -->
+    <div class="modal fade" id="campusModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="campusModalTitle">Agregar Campus</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="campusForm">
+                        <input type="hidden" id="campusId">
+
+                        <div class="mb-3">
+                            <label for="campusNombre" class="form-label">Nombre del Campus</label>
+                            <input type="text" class="form-control" id="campusNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="campusDireccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="campusDireccion" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="campusDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="campusDescripcion" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" onclick="saveCampus()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ROLES -->
+    <div class="modal fade" id="rolModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rolModalTitle">Agregar Rol</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rolForm">
+                        <input type="hidden" id="rolId">
+
+                        <div class="mb-3">
+                            <label for="rolNombre" class="form-label">Nombre del Rol</label>
+                            <input type="text" class="form-control" id="rolNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="rolDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="rolDescripcion" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="saveRol()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA PERSONA_ROL -->
+    <div class="modal fade" id="personaRolModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="personaRolModalTitle">Asignar Rol a Persona</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="personaRolForm">
+                        <input type="hidden" id="personaRolId">
+
+                        <div class="mb-3">
+                            <label for="personaRolIdPersona" class="form-label">ID Persona</label>
+                            <input type="number" class="form-control" id="personaRolIdPersona" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="personaRolIdRol" class="form-label">ID Rol</label>
+                            <input type="number" class="form-control" id="personaRolIdRol" required>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-info" onclick="savePersonaRol()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA PROGRAMA_MATERIA -->
+    <div class="modal fade" id="programaMateriaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="programaMateriaModalTitle">Asignar Materia a Programa</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="programaMateriaForm">
+                        <input type="hidden" id="programaMateriaId">
+
+                        <div class="mb-3">
+                            <label for="programaMateriaIdPrograma" class="form-label">ID Programa</label>
+                            <input type="number" class="form-control" id="programaMateriaIdPrograma" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="programaMateriaIdMateria" class="form-label">ID Materia</label>
+                            <input type="number" class="form-control" id="programaMateriaIdMateria" required>
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="saveProgramaMateria()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ASIGNACION_INSTALACIONES -->
+    <div class="modal fade" id="asignacionInstalacionesModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="asignacionInstalacionesModalTitle">Asignar Instalación a Campus</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="asignacionInstalacionesForm">
+                        <input type="hidden" id="asignacionInstalacionesId">
+
+                        <div class="mb-3">
+                            <label for="asignacionInstalacionesIdInstalacion" class="form-label">ID Instalación</label>
+                            <input type="number" class="form-control" id="asignacionInstalacionesIdInstalacion" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="asignacionInstalacionesIdMateria" class="form-label">ID Materia</label>
+                            <input type="number" class="form-control" id="asignacionInstalacionesIdMateria" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="asignacionInstalacionesDiaSemana" class="form-label">Día de la Semana</label>
+                            <select class="form-control" id="asignacionInstalacionesDiaSemana" required>
+                                <option value="">Seleccionar día</option>
+                                <option value="lunes">Lunes</option>
+                                <option value="martes">Martes</option>
+                                <option value="miercoles">Miércoles</option>
+                                <option value="jueves">Jueves</option>
+                                <option value="viernes">Viernes</option>
+                                <option value="sabado">Sábado</option>
+                                <option value="domingo">Domingo</option>
+                            </select>
+                        </div>
+
+                        <!-- Campos de hora eliminados, no existen en BD -->
+
+                        <div class="mb-3">
+                            <label for="asignacionInstalacionesIdPersona" class="form-label">ID Persona</label>
+                            <input type="number" class="form-control" id="asignacionInstalacionesIdPersona" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="saveAsignacionInstalaciones()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA BLOQUES -->
+    <div class="modal fade" id="bloqueModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bloqueModalTitle">Agregar Bloque</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bloqueForm">
+                        <input type="hidden" id="bloqueId">
+
+                        <div class="mb-3">
+                            <label for="bloqueNombre" class="form-label">Nombre del Bloque</label>
+                            <input type="text" class="form-control" id="bloqueNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bloqueDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="bloqueDescripcion" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bloqueIdCampus" class="form-label">ID Campus</label>
+                            <input type="number" class="form-control" id="bloqueIdCampus" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="saveBloque()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA AREAS FUNCIONALES -->
+    <div class="modal fade" id="areaFuncionalModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="areaFuncionalModalTitle">Agregar Área Funcional</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="areaFuncionalForm">
+                        <input type="hidden" id="areaFuncionalId">
+
+                        <div class="mb-3">
+                            <label for="areaFuncionalNombre" class="form-label">Nombre del Área</label>
+                            <input type="text" class="form-control" id="areaFuncionalNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="areaFuncionalDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="areaFuncionalDescripcion" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="saveAreaFuncional()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA HORARIOS INSTALACION -->
+    <div class="modal fade" id="horarioInstalacionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="horarioInstalacionModalTitle">Agregar Horario de Instalación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="horarioInstalacionForm">
+                        <input type="hidden" id="horarioInstalacionId">
+
+                        <div class="mb-3">
+                            <label for="horarioInstalacionIdInstalacion" class="form-label">ID Instalación</label>
+                            <input type="number" class="form-control" id="horarioInstalacionIdInstalacion" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="horarioInstalacionDiaSemana" class="form-label">Día de la Semana</label>
+                            <select class="form-control" id="horarioInstalacionDiaSemana">
+                                <option value="lunes">Lunes</option>
+                                <option value="martes">Martes</option>
+                                <option value="miercoles">Miércoles</option>
+                                <option value="jueves">Jueves</option>
+                                <option value="viernes">Viernes</option>
+                                <option value="sabado">Sábado</option>
+                                <option value="domingo">Domingo</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="horarioInstalacionHoraApertura" class="form-label">Hora apertura</label>
+                            <input type="time" class="form-control" id="horarioInstalacionHoraApertura" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="horarioInstalacionHoraCierre" class="form-label">Hora cierre</label>
+                            <input type="time" class="form-control" id="horarioInstalacionHoraCierre" required>
+                        </div>  
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="saveHorarioInstalacion()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PARA ESTADO INSTALACION -->
+    <div class="modal fade" id="estadoInstalacionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="estadoInstalacionModalTitle">Agregar Estado de Instalación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="estadoInstalacionForm">
+                        <input type="hidden" id="estadoInstalacionId">
+
+                        <div class="mb-3">
+                            <label for="estadoInstalacionNombre" class="form-label">Nombre del Estado</label>
+                            <input type="text" class="form-control" id="estadoInstalacionNombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="estadoInstalacionDescripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="estadoInstalacionDescripcion" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="saveEstadoInstalacion()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de la aplicación -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/scripts/config.js"></script>
+    <script src="assets/scripts/utils.js"></script>
+    <script src="assets/scripts/personas.js"></script>
+    <script src="assets/scripts/materias.js"></script>
+    <script src="assets/scripts/programas.js"></script>
+    <script src="assets/scripts/instalaciones.js"></script>
+    <script src="assets/scripts/campus.js"></script>
+    <script src="assets/scripts/campus-admin-fix.js"></script>
+    <script src="assets/scripts/roles.js"></script>
+    <script src="assets/scripts/persona_rol.js"></script>
+    <script src="assets/scripts/programa_materia.js"></script>
+    <script src="assets/scripts/asignacion_instalaciones.js"></script>
+    <script src="assets/scripts/bloques.js"></script>
+    <script src="assets/scripts/areas_funcionales.js"></script>
+    <script src="assets/scripts/horarios_instalacion.js"></script>
+    <script src="assets/scripts/estado_instalacion.js"></script>
+    <script src="assets/scripts/main.js"></script>
+
+</body>
+</html>
+
+

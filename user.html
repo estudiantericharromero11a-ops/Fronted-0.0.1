@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta - Gestión Universitaria</title>
+    <link rel="stylesheet" href="assets/styles/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/Images/favicon.png">
+
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar_Logo">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="80" viewBox="0 0 16 16" class="Logo_NAV">
+                        <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866z"/>
+                    </svg>
+                    <span class="texto_nav">Sistema Universitario - Consulta</span>
+                </a>
+
+                <div class="ms-auto d-flex gap-2">
+                    <button class="btn btn-info fw-bold px-3" onclick="history.back()">Atrás</button>
+                    <button class="btn btn-primary fw-bold px-3" onclick="window.location.href='index.html'">Cerrar Sesión</button>
+                </div>
+            </div>
+        </nav>
+
+        <!--Logo Cul-->
+        <div class="logo_cul"></div>
+    </header>
+
+    <main class="admin_panel">
+        <div class="container">
+            <div class="mb-4">
+                <h1>Consulta de Datos Universitarios</h1>
+                <p>Visualiza la información de personas, materias, programas y más. <strong>(Solo lectura)</strong></p>
+            </div>
+
+            <!-- CARDS DE ESTADÍSTICAS UNIVERSITARIAS (SOLO LECTURA) -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Personas</p>
+                        <h2 id="userTotalPersonas">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Materias</p>
+                        <h2 id="userTotalMaterias">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Programas</p>
+                        <h2 id="userTotalProgramas">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Instalaciones</p>
+                        <h2 id="userTotalInstalaciones">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Campus</p>
+                        <h2 id="userTotalCampus">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Roles</p>
+                        <h2 id="userTotalRoles">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Total Bloques</p>
+                        <h2 id="userTotalBloques">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Áreas Funcionales</p>
+                        <h2 id="userTotalAreasFuncionales">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Horarios Instalación</p>
+                        <h2 id="userTotalHorariosInstalacion">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats_card">
+                        <p>Estados Instalación</p>
+                        <h2 id="userTotalEstadoInstalacion">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS PARA LAS 13 TABLAS (SOLO LECTURA) -->
+            <ul class="nav nav-tabs mb-4" id="dataTabs" role="tablist">
+                <!-- ENTIDADES PRINCIPALES (6) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="personas-tab" data-bs-toggle="tab" data-bs-target="#personas" type="button" role="tab">Personas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="materias-tab" data-bs-toggle="tab" data-bs-target="#materias" type="button" role="tab">Materias</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="programas-tab" data-bs-toggle="tab" data-bs-target="#programas" type="button" role="tab">Programas</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="instalaciones-tab" data-bs-toggle="tab" data-bs-target="#instalaciones" type="button" role="tab">Instalaciones</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="campus-tab" data-bs-toggle="tab" data-bs-target="#campus" type="button" role="tab">Campus</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="roles-tab" data-bs-toggle="tab" data-bs-target="#roles" type="button" role="tab">Roles</button>
+                </li>
+                
+                <!-- TABLAS PUENTE (4 - OPCIONALES) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="personas-roles-tab" data-bs-toggle="tab" data-bs-target="#personas-roles" type="button" role="tab">Persona-Rol </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="programas-materias-tab" data-bs-toggle="tab" data-bs-target="#programas-materias" type="button" role="tab">Programa-Materia</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="asignacion-tab" data-bs-toggle="tab" data-bs-target="#asignacion" type="button" role="tab">Asignación-Instalaciones</button>
+                </li>
+                
+                <!-- CATÁLOGOS/REFERENCIAS (4) -->
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="bloques-tab" data-bs-toggle="tab" data-bs-target="#bloques" type="button" role="tab">Bloques</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="areas-tab" data-bs-toggle="tab" data-bs-target="#areas" type="button" role="tab">Áreas Funcionales</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="horarios-tab" data-bs-toggle="tab" data-bs-target="#horarios" type="button" role="tab">Horarios Instalación </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="estados-tab" data-bs-toggle="tab" data-bs-target="#estados" type="button" role="tab">Estados Instalación</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="dataTabsContent">
+                <!-- TABLA PERSONAS -->
+                <div class="tab-pane fade show active" id="personas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Personas</h4>
+                            <button class="btn btn-primary btn-sm" onclick="userLoadPersonas()">Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Documento</th>
+                                    <th>Correo</th>
+                                    <th>Teléfono</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userPersonasTableBody">
+                                <tr><td colspan="5" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA MATERIAS -->
+                <div class="tab-pane fade" id="materias" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Materias</h4>
+                            <button class="btn btn-success btn-sm" onclick="userLoadMaterias()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Créditos</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userMateriasTableBody">
+                                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PROGRAMAS -->
+                <div class="tab-pane fade" id="programas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Programas</h4>
+                            <button class="btn btn-info btn-sm" onclick="userLoadProgramas()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Duración (Semestres)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userProgramasTableBody">
+                                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA INSTALACIONES -->
+                <div class="tab-pane fade" id="instalaciones" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Instalaciones</h4>
+                            <button class="btn btn-warning btn-sm" onclick="userLoadInstalaciones()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Piso</th>
+                                    <th>Capacidad</th>
+                                    <th>ID Bloque</th>
+                                    <th>ID Área</th>
+                                    <th>ID Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userInstalacionesTableBody">
+                                <tr><td colspan="8" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA CAMPUS -->
+                <div class="tab-pane fade" id="campus" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Campus</h4>
+                            <button class="btn btn-secondary btn-sm" onclick="userLoadCampus()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userCampusTableBody">
+                                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ROLES -->
+                <div class="tab-pane fade" id="roles" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Roles</h4>
+                            <button class="btn btn-danger btn-sm" onclick="userLoadRoles()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userRolesTableBody">
+                                <tr><td colspan="3" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PERSONA-ROL (OPCIONAL) -->
+                <div class="tab-pane fade" id="personas-roles" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h4 class="titulo_h4">Asignación Persona-Rol </h4>
+                                <small class="text-muted">Endpoint: /persona_rol/</small>
+                            </div>
+                            <button class="btn btn-info btn-sm" onclick="userLoadPersonaRol()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID Persona</th>
+                                    <th>ID Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userPersonaRolTableBody">
+                                <tr><td colspan="3" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA PROGRAMA-MATERIA (OPCIONAL) -->
+                <div class="tab-pane fade" id="programas-materias" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h4 class="titulo_h4">Asignación Programa-Materia </h4>
+                                <small class="text-muted">Endpoint: /programa_materia/</small>
+                            </div>
+                            <button class="btn btn-success btn-sm" onclick="userLoadProgramaMateria()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+
+                                    <th>ID Programa</th>
+                                    <th>ID Materia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userProgramaMateriaTableBody">
+                                <tr><td colspan="3" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ASIGNACION-INSTALACIONES (OPCIONAL) -->
+                <div class="tab-pane fade" id="asignacion" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h4 class="titulo_h4">Asignación Instalación-Campus</h4>
+                                <small class="text-muted">Endpoint: /asignacion_instalaciones/</small>
+                            </div>
+                            <button class="btn btn-warning btn-sm" onclick="userLoadAsignacionInstalaciones()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Instalación</th>
+                                    <th>ID Materia</th>
+                                    <th>Día Semana</th>
+                                    <th>Hora Inicio</th>
+                                    <th>Hora Fin</th>
+                                    <th>ID Persona</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userAsignacionInstalacionesTableBody">
+                                <tr><td colspan="7" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA BLOQUES -->
+                <div class="tab-pane fade" id="bloques" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Bloques</h4>
+                            <button class="btn btn-primary btn-sm" onclick="userLoadBloques()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>ID Campus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userBloquesTableBody">
+                                <tr><td colspan="4" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA AREAS FUNCIONALES -->
+                <div class="tab-pane fade" id="areas" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Áreas Funcionales</h4>
+                            <button class="btn btn-success btn-sm" onclick="userLoadAreasFuncionales()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userAreasFuncionalesTableBody">
+                                <tr><td colspan="3" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA HORARIOS INSTALACION (OPCIONAL) -->
+                <div class="tab-pane fade" id="horarios" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h4 class="titulo_h4">Horarios de Instalación</h4>
+                                <small class="text-muted">Endpoint: /horarios_instalacion/</small>
+                            </div>
+                            <button class="btn btn-warning btn-sm" onclick="userLoadHorariosInstalacion()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>ID Instalación</th>
+                                    <th>Día Semana</th>
+                                    <th>Hora Apertura</th>
+                                    <th>Hora Cierre</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userHorariosInstalacionTableBody">
+                                <tr><td colspan="5" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TABLA ESTADOS INSTALACION -->
+                <div class="tab-pane fade" id="estados" role="tabpanel">
+                    <div class="table_card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="titulo_h4">Estados de Instalación</h4>
+                            <button class="btn btn-danger btn-sm" onclick="userLoadEstadoInstalacion()"> Recargar</button>
+                        </div>
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userEstadoInstalacionTableBody">
+                                <tr><td colspan="3" class="text-center text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Richar Romero. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/scripts/config.js"></script>
+    <script src="assets/scripts/user.js"></script>
+</body>
+</html>
