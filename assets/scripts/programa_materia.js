@@ -15,6 +15,17 @@ async function loadProgramaMateria() {
         // Convertir respuesta JSON a datos JavaScript
         const asignaciones = await response.json();
 
+        // DEBUG: Ver qué estructura tiene el primer elemento
+        if (asignaciones.length > 0) {
+            console.log('🔍 PROGRAMA_MATERIA - Primer elemento:', asignaciones[0]);
+            console.log('🔍 PROGRAMA_MATERIA - Keys del objeto:', Object.keys(asignaciones[0]));
+            console.log('🔍 PROGRAMA_MATERIA - Helper:', {
+                estado: getEstado(asignaciones[0]),
+                created_at: getCreatedAt(asignaciones[0]),
+                updated_at: getUpdatedAt(asignaciones[0])
+            });
+        }
+
         // Encontrar tabla en HTML (por ID)
         const tbody = document.getElementById('programaMateriaTableBody');
         if (!tbody) {
@@ -27,15 +38,16 @@ async function loadProgramaMateria() {
 
         // RECORRER cada asignación de PostgreSQL
         asignaciones.forEach(asignacion => {
-            // Crear identificador compuesto para operaciones
-            const compositeId = `${asignacion[PROGRAMA_MATERIA_FIELDS.id_programa]}-${asignacion[PROGRAMA_MATERIA_FIELDS.id_materia]}`;
+            const compositeId = `${asignacion.id_programa}-${asignacion.id_materia}`;
             
             // Crear UNA fila de tabla para esta asignación
             const row = `
                 <tr>
-                    <td>${asignacion[PROGRAMA_MATERIA_FIELDS.id_programa]}</td>
-                    <td>${asignacion[PROGRAMA_MATERIA_FIELDS.id_materia]}</td>
-                    
+                    <td>${asignacion.id_programa}</td>
+                    <td>${asignacion.id_materia}</td>
+                    <td>${getEstado(asignacion)}</td>
+                    <td>${getCreatedAt(asignacion)}</td>
+                    <td>${getUpdatedAt(asignacion)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editProgramaMateria('${compositeId}')">
@@ -114,7 +126,7 @@ async function editProgramaMateria(compositeId) {
         document.getElementById('programaMateriaId').value = compositeId;
         document.getElementById('programaMateriaIdPrograma').value = asignacion[PROGRAMA_MATERIA_FIELDS.id_programa];
         document.getElementById('programaMateriaIdMateria').value = asignacion[PROGRAMA_MATERIA_FIELDS.id_materia];
-
+        document.getElementById('programaMateriaEstado').value = asignacion[PROGRAMA_MATERIA_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('programaMateriaModal')).show();
@@ -132,6 +144,7 @@ async function saveProgramaMateria() {
         const compositeId = document.getElementById('programaMateriaId').value;
         const id_programa = document.getElementById('programaMateriaIdPrograma').value;
         const id_materia = document.getElementById('programaMateriaIdMateria').value;
+        const estado = document.getElementById('programaMateriaEstado').value;
         
         // Validar que campos requeridos no estén vacíos
         if (!id_programa || !id_materia) {
@@ -142,53 +155,36 @@ async function saveProgramaMateria() {
         // Crear objeto con formato PostgreSQL
         const asignacion = {
             [PROGRAMA_MATERIA_FIELDS.id_programa]: parseInt(id_programa),
-            [PROGRAMA_MATERIA_FIELDS.id_materia]: parseInt(id_materia)
+            [PROGRAMA_MATERIA_FIELDS.id_materia]: parseInt(id_materia),
+            [PROGRAMA_MATERIA_FIELDS.estado]: estado === 'true'
         };
 
-        // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)
+        // Decidir si es CREAR (POST) o ACTUALIZAR (DELETE + POST)
         const isCreating = !compositeId;  // Si no tiene compositeId, es nuevo
-        const method = isCreating ? 'POST' : 'PUT';
-        
-        // Para actualizar, necesitamos usar un endpoint que soporte clave compuesta
-        // Por ahora, usaremos POST para crear y DELETE + POST para actualizar
-        let url, finalMethod;
-        if (isCreating) {
-            url = `${API_BASE}/${API_ENDPOINTS.programa_materia}/`;
-            finalMethod = 'POST';
-        } else {
-            // Para actualizar, primero eliminamos la asignación anterior y luego creamos la nueva
-            const [old_id_programa, old_id_materia] = compositeId.split('-').map(Number);
-            
-            // Si los IDs son los mismos, no hay cambios
-            if (old_id_programa === parseInt(id_programa) && old_id_materia === parseInt(id_materia)) {
+        const parsedProgramaId = parseInt(id_programa, 10);
+        const parsedMateriaId = parseInt(id_materia, 10);
+
+        if (!isCreating) {
+            const [oldProgramaId, oldMateriaId] = compositeId.split('-').map(Number);
+
+            if (oldProgramaId !== parsedProgramaId || oldMateriaId !== parsedMateriaId) {
+                const deleteResponse = await fetch(`${API_BASE}/${API_ENDPOINTS.programa_materia}/${oldProgramaId}/${oldMateriaId}/`, {
+                    method: 'DELETE'
+                });
+                if (!deleteResponse.ok) {
+                    const errText = await deleteResponse.text();
+                    throw new Error(`Error al eliminar asignación anterior: ${errText}`);
+                }
+            } else {
                 bootstrap.Modal.getInstance(document.getElementById('programaMateriaModal')).hide();
                 await loadProgramaMateria();
                 return;
             }
-            
-            // Eliminar la asignación anterior
-            const deleteResponse = await fetch(`${API_BASE}/${API_ENDPOINTS.programa_materia}/delete`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    [PROGRAMA_MATERIA_FIELDS.id_programa]: old_id_programa,
-                    [PROGRAMA_MATERIA_FIELDS.id_materia]: old_id_materia
-                })
-            });
-            
-            if (!deleteResponse.ok) {
-                throw new Error(`Error al eliminar asignación anterior: ${deleteResponse.status}`);
-            }
-            
-            // Crear la nueva asignación
-            url = `${API_BASE}/${API_ENDPOINTS.programa_materia}/`;
-            finalMethod = 'POST';
         }
 
-
-        // Enviar a API REST
-        const response = await fetch(url, {
-            method: finalMethod,
+        // Crear o recrear la nueva asignación
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.programa_materia}/`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -227,19 +223,9 @@ async function deleteProgramaMateria(compositeId) {
         const [id_programa, id_materia] = compositeId.split('-').map(Number);
 
 
-        // Crear objeto para la eliminación
-        const asignacionData = {
-            [PROGRAMA_MATERIA_FIELDS.id_programa]: id_programa,
-            [PROGRAMA_MATERIA_FIELDS.id_materia]: id_materia
-        };
-
-        // Enviar solicitud DELETE con datos en el body
-        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.programa_materia}/delete`, {
-            method: 'POST',  // Usando POST para enviar datos en el body
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(asignacionData)
+        // Enviar solicitud DELETE usando clave compuesta en la URL
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.programa_materia}/${id_programa}/${id_materia}/`, {
+            method: 'DELETE'
         });
 
         // Verificar respuesta

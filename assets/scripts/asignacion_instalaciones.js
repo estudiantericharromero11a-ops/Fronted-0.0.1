@@ -34,8 +34,12 @@ async function loadAsignacionInstalaciones() {
                     <td>${asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_instalacion]}</td>
                     <td>${asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_materia]}</td>
                     <td>${asignacion[ASIGNACION_INSTALACIONES_FIELDS.dia_semana] || '-'}</td>
-
-                    <td>${asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_persona] || '-'}</td>
+                    <td>${asignacion.hora_inicio || '-'}</td>
+                    <td>${asignacion.hora_fin || '-'}</td>
+                    <td>${getFieldValue(asignacion, 'id_persona') || '-'}</td>
+                    <td>${getEstado(asignacion)}</td>
+                    <td>${getCreatedAt(asignacion)}</td>
+                    <td>${getUpdatedAt(asignacion)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editAsignacionInstalaciones(${asignacion.id_asignacion})">
@@ -97,8 +101,8 @@ async function editAsignacionInstalaciones(id) {
         document.getElementById('asignacionInstalacionesIdInstalacion').value = asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_instalacion];
         document.getElementById('asignacionInstalacionesIdMateria').value = asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_materia];
         document.getElementById('asignacionInstalacionesDiaSemana').value = asignacion[ASIGNACION_INSTALACIONES_FIELDS.dia_semana];
-
         document.getElementById('asignacionInstalacionesIdPersona').value = asignacion[ASIGNACION_INSTALACIONES_FIELDS.id_persona];
+        document.getElementById('asignacionInstalacionesEstado').value = asignacion[ASIGNACION_INSTALACIONES_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('asignacionInstalacionesModal')).show();
@@ -120,6 +124,7 @@ async function saveAsignacionInstalaciones() {
         // const hora_inicio = document.getElementById('asignacionInstalacionesHoraInicio').value;
         // const hora_fin = document.getElementById('asignacionInstalacionesHoraFin').value;
         const id_persona = document.getElementById('asignacionInstalacionesIdPersona').value;
+        const estado = document.getElementById('asignacionInstalacionesEstado').value;
 
         // Validar que campos requeridos no estén vacíos
         if (!id_instalacion || !id_materia || !dia_semana || !id_persona) {
@@ -132,8 +137,8 @@ async function saveAsignacionInstalaciones() {
             [ASIGNACION_INSTALACIONES_FIELDS.id_instalacion]: parseInt(id_instalacion),
             [ASIGNACION_INSTALACIONES_FIELDS.id_materia]: parseInt(id_materia),
             [ASIGNACION_INSTALACIONES_FIELDS.dia_semana]: dia_semana,
-
-            [ASIGNACION_INSTALACIONES_FIELDS.id_persona]: parseInt(id_persona)
+            [ASIGNACION_INSTALACIONES_FIELDS.id_persona]: parseInt(id_persona),
+            [ASIGNACION_INSTALACIONES_FIELDS.estado]: estado === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

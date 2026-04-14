@@ -1,6 +1,14 @@
 // Arranque mínimo sin comentarios raros
 
 document.addEventListener('DOMContentLoaded', async function() {
+    // Esperar a que se detecte el API port primero
+    const detectedPort = await detectApiPort();
+    
+    if (!detectedPort) {
+        console.error('No se pudo conectar a la API. Verifica que el servidor esté corriendo.');
+        return;
+    }
+
     await showAPIStatus();
 
     await loadPersonas();

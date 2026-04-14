@@ -4,39 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <!-- Enlace a la hoja de estilos personalizada boostrap -->
-     <link rel="stylesheet" href="assets/styles/styles.css">
+    <!-- Enlace a la hoja de estilos de Bootstrap primero -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/styles/styles.css">
     <link rel="icon" type="image/png" href="assets/Images/favicon.png">
 </head>
 <body>
 
-     <!-- Encabezado principal con logo y ayuda -->
-    <header>
-        <!-- Navbar con fondo oscuro (navbar-dark y bg-dark) -->
-        <nav class="navbar navbar_Logo">
-            <div class="container-fluid">
-                
-                <!-- Logo y Texto -->
-                <a class="navbar-brand d-flex align-items-center" href="#">
-
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="80" viewBox="0 0 16 16" class ="Logo_NAV">
-                    <path fill-rule="evenodd" d="M8.5.134a1 1 0 0 0-1 0l-6 3.577a1 1 0 0 0-.5.866v6.846a1 1 0 0 0 .5.866l6 3.577a1 1 0 0 0 1 0l6-3.577a1 1 0 0 0 .5-.866V4.577a1 1 0 0 0-.5-.866z"/>
-                </svg>
-
-                <span class="texto_nav">Sistema Universitario</span>
-
-                </a>
-
-                <!-- Botón Ayuda a la derecha -->
-                <div class="ms-auto">
-                    <a href="#" class="btn btn-primary fw-bold px-4" style="border-radius: 8px;">
-                        Ayuda
-                    </a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <app-header page="login" title="Sistema Universitario"></app-header>
 
 
     <main>
@@ -62,9 +37,7 @@
                     </div>
 
                     <div class="actions">
-
-                        <button type="button" class="btn-primary btn-admin" id="adminBtn">Iniciar como Administrador</button>
-                        <button type="button" class="btn-secondary btn-user" id="userBtn">Iniciar como Usuario</button>
+                        <button type="button" class="btn-primary btn-admin" id="loginBtn">Iniciar sesión</button>
                     </div>
 
                 </form>
@@ -74,16 +47,13 @@
         </div>
     </main>
 
-    <!--Logo Cul-->
-    <div class="logo_cul"></div>
-
-    <footer>
-        <p>&copy; 2026 Richar Romero. Todos los derechos reservados.</p>
-    </footer>
+    <app-footer></app-footer>
 
     <!-- Scripts de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+    <!-- Scripts de Autenticación JWT -->
+    <script src="assets/scripts/auth.js"></script>
+    <script src="assets/scripts/components.js"></script>
     <script src="assets/scripts/login.js"></script>
 
 </body>

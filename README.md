@@ -11,7 +11,7 @@ Este proyecto es una interfaz de usuario completa para un sistema de gestión un
 ### Flujo de Usuario
 1. **Autenticación**: El usuario accede a `index.html` y selecciona su rol (Administrador o Usuario)
 2. **Redirección**: Según el rol, se redirige a `admin.html` o `user.html`
-3. **Interacción**: 
+3. **Interacción**:
    - Administradores pueden crear, leer, actualizar y eliminar (CRUD) datos
    - Usuarios solo pueden consultar datos (solo lectura)
 4. **API Communication**: Todas las operaciones se realizan mediante llamadas HTTP a un backend REST API
@@ -49,7 +49,7 @@ Este proyecto es una interfaz de usuario completa para un sistema de gestión un
 - **HTML5**: Estructura semántica con elementos como `<header>`, `<nav>`, `<main>`, `<section>`, `<footer>`
 - **CSS3**: Estilos personalizados con variables CSS, flexbox y grid
 - **Bootstrap 5.3.8**: Framework CSS para componentes responsivos, utilidades y JavaScript plugins
-- **JavaScript (ES6+)**: 
+- **JavaScript (ES6+)**:
   - Funciones asíncronas con `async/await`
   - Fetch API para llamadas HTTP
   - Manipulación del DOM
@@ -59,11 +59,13 @@ Este proyecto es una interfaz de usuario completa para un sistema de gestión un
 ## Estructura Completa del Proyecto
 
 ```
-Fronted 0.01/
+Fronted 1.2.2/
 ├── README.md                    # Documentación del proyecto
 ├── admin.html                   # Panel principal de administración
 ├── index.html                   # Página de inicio y login
 ├── user.html                    # Panel de consulta para usuarios
+├── aiagent.html                 # Panel de agente de IA (opcional)
+├── start_frontend.bat           # Script para iniciar servidor local
 └── assets/
     ├── docs/                    # Documentación adicional
     ├── Images/
@@ -71,11 +73,15 @@ Fronted 0.01/
     │   └── [otras imágenes]     # Imágenes del proyecto
     ├── scripts/
     │   ├── _TEMPLATE.js         # Plantilla para nuevos scripts
+    │   ├── aiagent.js           # Funciones del agente de IA
     │   ├── areas_funcionales.js # Gestión de áreas funcionales
     │   ├── asignacion_instalaciones.js # Asignaciones de instalaciones
+    │   ├── auth-guard.js        # Protección de rutas con autenticación
+    │   ├── auth.js              # Servicio de autenticación JWT
     │   ├── bloques.js           # Gestión de bloques del campus
     │   ├── campus-admin-fix.js  # Correcciones específicas del campus
     │   ├── campus.js            # Gestión de campus
+    │   ├── components.js        # Componentes reutilizables
     │   ├── config.js            # Configuración global (URLs API, constantes)
     │   ├── estado_instalacion.js # Estados de instalaciones
     │   ├── horarios_instalacion.js # Horarios de instalaciones
@@ -91,6 +97,7 @@ Fronted 0.01/
     │   ├── user.js              # Funciones específicas del panel usuario
     │   └── utils.js             # Utilidades generales
     ├── styles/
+    │   ├── aiagent.css          # Estilos específicos del agente de IA
     │   └── styles.css           # Estilos personalizados
     └── video/                   # Archivos multimedia (videos)
 ```
@@ -117,6 +124,17 @@ Fronted 0.01/
   - Validación de formularios de login
   - Redirección según rol seleccionado
   - Gestión de estado de sesión básico
+
+### Autenticación y Seguridad
+- **`auth.js`**: Servicio de autenticación JWT
+  - Login contra backend
+  - Gestión de tokens JWT
+  - Verificación de validez de sesión
+
+- **`auth-guard.js`**: Protección de rutas
+  - Verificación de autenticación al acceder a páginas
+  - Redirección automática si no hay sesión válida
+  - Validación de tokens en backend
 
 ### Archivos por Entidad (Admin)
 Cada archivo maneja una entidad específica con operaciones CRUD:
@@ -182,6 +200,14 @@ Cada archivo maneja una entidad específica con operaciones CRUD:
   - Carga de datos en modo solo lectura
   - Navegación y filtros para usuarios
 
+- **`aiagent.js`**: Funciones del agente de IA
+  - Interfaz de conversación con IA
+  - Procesamiento de consultas
+
+- **`components.js`**: Componentes reutilizables
+  - Elementos UI compartidos
+  - Funciones de renderizado
+
 - **`_TEMPLATE.js`**: Plantilla para nuevos módulos
   - Estructura base para implementar nuevas entidades
   - Ejemplo de buenas prácticas
@@ -198,7 +224,7 @@ Cada archivo maneja una entidad específica con operaciones CRUD:
 1. **Clona o descarga el proyecto:**
    ```bash
    git clone <url-del-repositorio>
-   cd "Fronted 0.01"
+   cd "Fronted 1.2.2"
    ```
 
 2. **Configura el backend:**
@@ -209,17 +235,17 @@ Cada archivo maneja una entidad específica con operaciones CRUD:
 3. **Sirve los archivos estáticos:**
    ```bash
    # Opción 1: Python (recomendado)
-   python -m http.server 8000
+   python -m http.server 3000
 
    # Opción 2: Node.js con http-server
-   npx http-server -p 8000
+   npx http-server -p 3000
 
    # Opción 3: PHP
-   php -S localhost:8000
+   php -S localhost:3000
    ```
 
 4. **Accede al sistema:**
-   - Abre `http://localhost:8000/index.html` en tu navegador
+   - Abre `http://localhost:3000/index.html` en tu navegador
 
 ## Uso del Sistema
 
@@ -239,6 +265,15 @@ Cada archivo maneja una entidad específica con operaciones CRUD:
 3. **Recarga**: Usa botones "Recargar" para actualizar información
 4. **Solo Lectura**: No hay opciones de modificación
 
+## Autenticación JWT
+
+El sistema implementa autenticación basada en JSON Web Tokens (JWT):
+
+- **Login**: Envío de credenciales (username/password) al backend
+- **Token Storage**: Almacenamiento seguro en localStorage
+- **Verificación**: Validación automática de tokens en páginas protegidas
+- **Logout**: Invalidación de sesión y limpieza de datos locales
+
 ## API Integration
 
 ### Endpoints REST
@@ -246,6 +281,9 @@ El sistema se comunica con un backend RESTful API. Endpoints documentados:
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
+| `/auth/login` | POST | Autenticación de usuarios |
+| `/auth/logout` | POST | Cierre de sesión |
+| `/auth/verify-header` | GET | Verificación de token |
 | `/personas/` | GET, POST, PUT, DELETE | Gestión de personas |
 | `/materias/` | GET, POST, PUT, DELETE | Gestión de materias |
 | `/programas/` | GET, POST, PUT, DELETE | Gestión de programas |
@@ -263,7 +301,7 @@ El sistema se comunica con un backend RESTful API. Endpoints documentados:
 ### Formato de Datos
 - **Request**: JSON con campos específicos por entidad
 - **Response**: JSON con datos o mensajes de error
-- **Autenticación**: Headers personalizados (si implementado en backend)
+- **Autenticación**: Bearer token en headers para endpoints protegidos
 
 ## Desarrollo y Contribución
 

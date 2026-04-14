@@ -21,10 +21,13 @@ async function loadMaterias() {
         materias.forEach(materia => {
             const row = `
                 <tr>
-                    <td>${materia.id_materia}</td>
-                    <td>${materia[MATERIAS_FIELDS.nombre]}</td>
-                    <td>${materia[MATERIAS_FIELDS.creditos] || 0}</td>
-                    <td>${materia[MATERIAS_FIELDS.descripcion] || '-'}</td>
+                    <td>${getFieldValue(materia, 'id_materia')}</td>
+                    <td>${getFieldValue(materia, 'nombre')}</td>
+                    <td>${getFieldValue(materia, 'creditos') || 0}</td>
+                    <td>${getFieldValue(materia, 'descripcion') || '-'}</td>
+                    <td>${getEstado(materia)}</td>
+                    <td>${getCreatedAt(materia)}</td>
+                    <td>${getUpdatedAt(materia)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editMateria(${materia.id_materia})">Editar</button>
@@ -66,6 +69,7 @@ async function editMateria(id) {
         document.getElementById('materiaNombre').value = materia[MATERIAS_FIELDS.nombre];
         document.getElementById('materiaCreditos').value = materia[MATERIAS_FIELDS.creditos];
         document.getElementById('materiaDescripcion').value = materia[MATERIAS_FIELDS.descripcion];
+        document.getElementById('materiaEstado').value = materia[MATERIAS_FIELDS.estado] ? 'true' : 'false';
 
         new bootstrap.Modal(document.getElementById('materiaModal')).show();
 
@@ -93,7 +97,8 @@ async function saveMateria() {
         const materia = {
             [MATERIAS_FIELDS.nombre]: nombre,
             [MATERIAS_FIELDS.creditos]: parseInt(creditos) || 0,
-            [MATERIAS_FIELDS.descripcion]: descripcion
+            [MATERIAS_FIELDS.descripcion]: descripcion,
+            [MATERIAS_FIELDS.estado]: document.getElementById('materiaEstado').value === 'true'
         };
 
         const isCreating = !id;

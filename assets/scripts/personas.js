@@ -21,11 +21,14 @@ async function loadPersonas() {
         personas.forEach(persona => {
             const row = `
                 <tr>
-                    <td>${persona.id_persona}</td>
-                    <td>${persona[PERSONAS_FIELDS.nombre]}</td>
-                    <td>${persona[PERSONAS_FIELDS.documento]}</td>
-                    <td>${persona[PERSONAS_FIELDS.correo] || '-'}</td>
-                    <td>${persona[PERSONAS_FIELDS.telefono] || '-'}</td>
+                    <td>${getFieldValue(persona, 'id_persona')}</td>
+                    <td>${getFieldValue(persona, 'nombre')}</td>
+                    <td>${getFieldValue(persona, 'documento')}</td>
+                    <td>${getFieldValue(persona, 'correo') || '-'}</td>
+                    <td>${getFieldValue(persona, 'telefono') || '-'}</td>
+                    <td>${getEstado(persona)}</td>
+                    <td>${getCreatedAt(persona)}</td>
+                    <td>${getUpdatedAt(persona)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editPersona(${persona.id_persona})">Editar</button>
@@ -68,6 +71,7 @@ async function editPersona(id) {
         document.getElementById('personaDocumento').value = persona[PERSONAS_FIELDS.documento];
         document.getElementById('personaCorreo').value = persona[PERSONAS_FIELDS.correo];
         document.getElementById('personaTelefono').value = persona[PERSONAS_FIELDS.telefono];
+        document.getElementById('personaEstado').value = persona[PERSONAS_FIELDS.estado] ? 'true' : 'false';
 
         new bootstrap.Modal(document.getElementById('personaModal')).show();
 
@@ -97,7 +101,8 @@ async function savePersona() {
             [PERSONAS_FIELDS.nombre]: nombre,
             [PERSONAS_FIELDS.documento]: documento,
             [PERSONAS_FIELDS.correo]: correo,
-            [PERSONAS_FIELDS.telefono]: telefono
+            [PERSONAS_FIELDS.telefono]: telefono,
+            [PERSONAS_FIELDS.estado]: document.getElementById('personaEstado').value === 'true'
         };
 
         const isCreating = !id;

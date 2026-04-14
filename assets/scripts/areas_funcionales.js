@@ -32,8 +32,10 @@ async function loadAreasFuncionales() {
                 <tr>
                     <td>${area.id_area}</td>
                     <td>${area[AREAS_FUNCIONALES_FIELDS.nombre_area]}</td>
-                    
-                    <td>${area[AREAS_FUNCIONALES_FIELDS.descripcion] || '-'}</td>
+                    <td>${getFieldValue(area, 'descripcion') || '-'}</td>
+                    <td>${getEstado(area)}</td>
+                    <td>${getCreatedAt(area)}</td>
+                    <td>${getUpdatedAt(area)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editAreaFuncional(${area.id_area})">
@@ -93,8 +95,8 @@ async function editAreaFuncional(id) {
         // Llenar formulario con datos de PostgreSQL
         document.getElementById('areaFuncionalId').value = area.id_area;
         document.getElementById('areaFuncionalNombre').value = area[AREAS_FUNCIONALES_FIELDS.nombre_area];
-
         document.getElementById('areaFuncionalDescripcion').value = area[AREAS_FUNCIONALES_FIELDS.descripcion];
+        document.getElementById('areaFuncionalEstado').value = area[AREAS_FUNCIONALES_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('areaFuncionalModal')).show();
@@ -122,7 +124,8 @@ async function saveAreaFuncional() {
         // Crear objeto con formato PostgreSQL
         const area = {
             [AREAS_FUNCIONALES_FIELDS.nombre_area]: nombre,
-            [AREAS_FUNCIONALES_FIELDS.descripcion]: descripcion
+            [AREAS_FUNCIONALES_FIELDS.descripcion]: descripcion,
+            [AREAS_FUNCIONALES_FIELDS.estado]: document.getElementById('areaFuncionalEstado').value === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thania asistente virtual</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/styles/styles.css">
+    <link rel="stylesheet" href="assets/styles/aiagent.css">
+    <link rel="icon" type="image/png" href="assets/Images/favicon.png">
+</head>
+<body class="aiagent-body">
+
+    <!-- HEADER -->
+    <header class="aiagent-header">
+        <div class="aiagent-header-content">
+            <div class="aiagent-title">
+                <img src="assets/Images/thania-avatar.png" alt="Thania" class="header-avatar">
+                <div>
+                    <h1>Thania</h1>
+                    <span class="status-online">
+                        <span class="status-dot"></span>
+                        En línea
+                    </span>
+                </div>
+            </div>
+            <div class="aiagent-header-actions">
+                <button class="btn btn-outline-light btn-sm" id="themeBtnFooter">
+                    Modo Claro
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" id="logoutBtn">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ALERTA DE CONEXIÓN -->
+    <div class="aiagent-alert d-none" id="aiagentAlert"></div>
+
+    <!-- CHAT CONTAINER -->
+    <div class="aiagent-chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <!-- HOY Section -->
+            <div class="chat-section-date">HOY</div>
+
+            <!-- Mensaje IA -->
+            <div class="chat-message ai-message">
+                <div class="message-icon">
+                    <img src="assets/Images/thania-avatar.png" alt="Thania" class="ai-avatar">
+                </div>
+                <div class="message-content">
+                    <p class="message-sender">Thania</p>
+                    <div class="message-bubble ai-bubble">
+                        ¡Hola! Soy Thania. Puedo ayudarte a consultar informacion acerca de la universidad. Dime ¿En qué puedo ayudarte hoy?
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INPUT AREA -->
+    <div class="aiagent-input-container">
+        <div class="aiagent-input-wrapper">
+            <div class="input-group aiagent-input-group">
+                <input 
+                    type="text" 
+                    class="form-control aiagent-input" 
+                    id="messageInput"
+                    placeholder="Escribe tu consulta aquí..."
+                    autocomplete="off"
+                >
+                <button class="input-btn send-btn" id="sendBtn" title="Enviar">
+                    <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <p class="footer-info">© 2026 Richar Romero. Todos los derechos reservados.</p>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts de Autenticación JWT -->
+    <script src="assets/scripts/auth.js"></script>
+    <script src="assets/scripts/auth-guard.js"></script>
+    <script src="assets/scripts/components.js"></script>
+    <script src="assets/scripts/aiagent.js"></script>
+
+</body>
+</html>

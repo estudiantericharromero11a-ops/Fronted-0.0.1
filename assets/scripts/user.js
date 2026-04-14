@@ -2,25 +2,15 @@
 // Este archivo solo contiene operaciones GET (lectura)
 // No hay CREATE, UPDATE, DELETE
 
-// HELPER: Obtener valor de campo
-function getUserField(item, fieldName) {
-    const variations = [
-        fieldName,
-        fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
-        fieldName.toUpperCase(),
-        'nombre_' + fieldName,
-        fieldName + '_campus'
-    ];
-    
-    for (const variation of variations) {
-        if (item[variation] !== undefined && item[variation] !== null) {
-            return item[variation];
-        }
-    }
-    return undefined;
-}
-
 document.addEventListener('DOMContentLoaded', async function() {
+    // Esperar a que se detecte el API port primero
+    const detectedPort = await detectApiPort();
+    
+    if (!detectedPort) {
+        console.error('No se pudo conectar a la API. Verifica que el servidor esté corriendo.');
+        return;
+    }
+
     await userLoadAllData();
 });
 
@@ -52,32 +42,41 @@ async function userLoadAllData() {
 async function userUpdateStats() {
     try {
         const stats = await Promise.all([
-            fetch(`${API_BASE}/${API_ENDPOINTS.personas}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.materias}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.programas}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.instalaciones}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.campus}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.roles}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.bloques}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.areas_funcionales}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.horarios_instalacion}/`),
-            fetch(`${API_BASE}/${API_ENDPOINTS.estado_instalacion}/`)
+            fetch(`${API_BASE}/${API_ENDPOINTS.personas}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.materias}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.programas}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.instalaciones}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.campus}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.roles}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.bloques}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.areas_funcionales}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.horarios_instalacion}/`).catch(() => ({ ok: false })),
+            fetch(`${API_BASE}/${API_ENDPOINTS.estado_instalacion}/`).catch(() => ({ ok: false }))
         ]);
         
-        if (stats.every(r => r.ok)) {
-            const data = await Promise.all(stats.map(r => r.json()));
-            
-            document.getElementById('userTotalPersonas').textContent = data[0].length;
-            document.getElementById('userTotalMaterias').textContent = data[1].length;
-            document.getElementById('userTotalProgramas').textContent = data[2].length;
-            document.getElementById('userTotalInstalaciones').textContent = data[3].length;
-            document.getElementById('userTotalCampus').textContent = data[4].length;
-            document.getElementById('userTotalRoles').textContent = data[5].length;
-            document.getElementById('userTotalBloques').textContent = data[6].length;
-            document.getElementById('userTotalAreasFuncionales').textContent = data[7].length;
-            document.getElementById('userTotalHorariosInstalacion').textContent = data[8].length;
-            document.getElementById('userTotalEstadoInstalacion').textContent = data[9].length;
-        }
+        const data = await Promise.all(stats.map(async r => {
+            return r.ok ? await r.json() : [];
+        }));
+        
+        const totals = [
+            'userTotalPersonas',
+            'userTotalMaterias',
+            'userTotalProgramas',
+            'userTotalInstalaciones',
+            'userTotalCampus',
+            'userTotalRoles',
+            'userTotalBloques',
+            'userTotalAreasFuncionales',
+            'userTotalHorariosInstalacion',
+            'userTotalEstadoInstalacion'
+        ];
+
+        totals.forEach((id, index) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = Array.isArray(data[index]) ? data[index].length : 0;
+            }
+        });
     } catch (error) {
         console.error('Error estadísticas:', error);
     }
@@ -98,23 +97,26 @@ async function userLoadPersonas() {
         if (!tbody) return;
         
         if (!personas.length) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">No hay datos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay datos</td></tr>';
             return;
         }
         
         tbody.innerHTML = personas.map(p => `
             <tr>
                 <td>${p.id_persona}</td>
-                <td>${p[PERSONAS_FIELDS.nombre]}</td>
-                <td>${p[PERSONAS_FIELDS.documento]}</td>
-                <td>${p[PERSONAS_FIELDS.correo]}</td>
-                <td>${p[PERSONAS_FIELDS.telefono] || '-'}</td>
+                <td>${p.nombre}</td>
+                <td>${p.documento}</td>
+                <td>${p.correo}</td>
+                <td>${p.telefono || '-'}</td>
+                <td>${getEstado(p)}</td>
+                <td>${getCreatedAt(p)}</td>
+                <td>${getUpdatedAt(p)}</td>
             </tr>
         `).join('');
     } catch (error) {
         console.error('Error personas:', error.message);
         const tbody = document.getElementById('userPersonasTableBody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error</td></tr>';
     }
 }
 
@@ -133,16 +135,19 @@ async function userLoadMaterias() {
         if (!tbody) return;
         
         if (!materias.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay datos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No hay datos</td></tr>';
             return;
         }
         
         tbody.innerHTML = materias.map(m => `
             <tr>
-                <td>${m.id_materia}</td>
-                <td>${m[MATERIAS_FIELDS.nombre]}</td>
-                <td>${m[MATERIAS_FIELDS.creditos] || '-'}</td>
-                <td>${m[MATERIAS_FIELDS.descripcion] || '-'}</td>
+                <td>${m.id_materia || '-'}</td>
+                <td>${m.nombre || '-'}</td>
+                <td>${m.creditos || '-'}</td>
+                <td>${m.descripcion || '-'}</td>
+                <td>${getEstado(m)}</td>
+                <td>${getCreatedAt(m)}</td>
+                <td>${getUpdatedAt(m)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -167,22 +172,25 @@ async function userLoadProgramas() {
         if (!tbody) return;
         
         if (!programas.length) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay datos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">No hay datos</td></tr>';
             return;
         }
         
         tbody.innerHTML = programas.map(p => `
             <tr>
-                <td>${p.id_programa}</td>
-                <td>${p[PROGRAMAS_FIELDS.nombre]}</td>
-                <td>${p[PROGRAMAS_FIELDS.tipo_programa] || '-'}</td>
-                <td>${p[PROGRAMAS_FIELDS.duracion_semestres] || '-'}</td>
+                <td>${p.id_programa || '-'}</td>
+                <td>${p.nombre || '-'}</td>
+                <td>${p.tipo_programa || '-'}</td>
+                <td>${p.duracion_semestres || '-'}</td>
+                <td>${getEstado(p)}</td>
+                <td>${getCreatedAt(p)}</td>
+                <td>${getUpdatedAt(p)}</td>
             </tr>
         `).join('');
     } catch (error) {
         console.error('Error programas:', error.message);
         const tbody = document.getElementById('userProgramasTableBody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error</td></tr>';
     }
 }
 
@@ -201,26 +209,29 @@ async function userLoadInstalaciones() {
         if (!tbody) return;
         
         if (!instalaciones.length) {
-            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">No hay datos</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" class="text-center text-muted">No hay datos</td></tr>';
             return;
         }
         
         tbody.innerHTML = instalaciones.map(i => `
             <tr>
-                <td>${i.id_instalacion}</td>
-                <td>${i[INSTALACIONES_FIELDS.nombre]}</td>
-                <td>${i[INSTALACIONES_FIELDS.tipo_instalacion] || '-'}</td>
-                <td>${i[INSTALACIONES_FIELDS.piso] || '-'}</td>
-                <td>${i[INSTALACIONES_FIELDS.capacidad] || '-'}</td>
-                <td>${i[INSTALACIONES_FIELDS.id_bloque] || '-'}</td>
-                <td>${i[INSTALACIONES_FIELDS.id_area] || '-'}</td>
-                <td>${i[INSTALACIONES_FIELDS.id_estado] || '-'}</td>
+                <td>${i.id_instalacion || '-'}</td>
+                <td>${i.nombre || '-'}</td>
+                <td>${i.tipo_instalacion || '-'}</td>
+                <td>${i.piso || '-'}</td>
+                <td>${i.capacidad || '-'}</td>
+                <td>${i.id_bloque || '-'}</td>
+                <td>${i.id_area || '-'}</td>
+                <td>${i.id_estado || '-'}</td>
+                <td>${getEstado(i)}</td>
+                <td>${getCreatedAt(i)}</td>
+                <td>${getUpdatedAt(i)}</td>
             </tr>
         `).join('');
     } catch (error) {
         console.error('Error instalaciones:', error.message);
         const tbody = document.getElementById('userInstalacionesTableBody');
-        if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="11" class="text-center text-danger">Error</td></tr>';
     }
 }
 
@@ -243,14 +254,32 @@ async function userLoadCampus() {
             return;
         }
         
-        tbody.innerHTML = campus.map(c => `
-            <tr>
-                <td>${c.id_campus}</td>
-                <td>${c[CAMPUS_FIELDS.nombre]}</td>
-                <td>${c[CAMPUS_FIELDS.direccion] || '-'}</td>
-                <td>${c[CAMPUS_FIELDS.descripcion] || '-'}</td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = campus.map(c => {
+            const estadoValue = getEstado(c) !== '-' ? getEstado(c) : formatEstado(c.id_estado);
+            const createdValue = getCreatedAt(c) !== '-' ? getCreatedAt(c) :
+                displayValue(c.created_at || c.created || c.fecha_creacion || c.fechaCreacion);
+            const updatedValue = getUpdatedAt(c) !== '-' ? getUpdatedAt(c) :
+                displayValue(c.updated_at || c.updated || c.fecha_actualizacion || c.fechaActualizacion);
+            const auditMissing = !hasCampusAuditFields(c) && estadoValue === '-' && createdValue === '-' && updatedValue === '-';
+            if (auditMissing) {
+                console.warn('[User Campus] El backend no devuelve campos de auditoría para campus:', c);
+            }
+            const displayedEstado = auditMissing ? 'No disponible' : estadoValue;
+            const displayedCreated = auditMissing ? 'No disponible' : createdValue;
+            const displayedUpdated = auditMissing ? 'No disponible' : updatedValue;
+
+            return `
+                <tr>
+                    <td>${c.id_campus || '-'}</td>
+                    <td>${c.nombre || '-'}</td>
+                    <td>${c.direccion || '-'}</td>
+                    <td>${c.descripcion || '-'}</td>
+                    <td>${displayedEstado}</td>
+                    <td>${displayedCreated}</td>
+                    <td>${displayedUpdated}</td>
+                </tr>
+            `;
+        }).join('');
     } catch (error) {
         console.error('Error campus:', error.message);
         const tbody = document.getElementById('userCampusTableBody');
@@ -279,9 +308,12 @@ async function userLoadRoles() {
         
         tbody.innerHTML = roles.map(r => `
             <tr>
-                <td>${r.id_rol}</td>
-                <td>${r[ROLES_FIELDS.nombre_rol]}</td>
-                <td>${r[ROLES_FIELDS.descripcion] || '-'}</td>
+                <td>${r.id_rol || '-'}</td>
+                <td>${r.nombre_rol || r.nombre || '-'}</td>
+                <td>${r.descripcion || '-'}</td>
+                <td>${getEstado(r)}</td>
+                <td>${getCreatedAt(r)}</td>
+                <td>${getUpdatedAt(r)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -312,8 +344,10 @@ async function userLoadPersonaRol() {
         
         tbody.innerHTML = personaRol.map(pr => `
             <tr>
-                <td>${pr[PERSONA_ROL_FIELDS.id_persona]}</td>
-                <td>${pr[PERSONA_ROL_FIELDS.id_rol]}</td>
+                <td>${pr.id_persona}</td>
+                <td>${pr.id_rol}</td>
+                <td>${getCreatedAt(pr)}</td>
+                <td>${getUpdatedAt(pr)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -344,8 +378,11 @@ async function userLoadProgramaMateria() {
         
         tbody.innerHTML = programaMateria.map(pm => `
             <tr>
-                <td>${pm[PROGRAMA_MATERIA_FIELDS.id_programa]}</td>
-                <td>${pm[PROGRAMA_MATERIA_FIELDS.id_materia]}</td>
+                <td>${pm.id_programa}</td>
+                <td>${pm.id_materia}</td>
+                <td>${getEstado(pm)}</td>
+                <td>${getCreatedAt(pm)}</td>
+                <td>${getUpdatedAt(pm)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -377,12 +414,15 @@ async function userLoadAsignacionInstalaciones() {
         tbody.innerHTML = asignacion.map(a => `
             <tr>
                 <td>${a.id_asignacion || '-'}</td>
-                <td>${a[ASIGNACION_INSTALACIONES_FIELDS.id_instalacion]}</td>
-                <td>${a[ASIGNACION_INSTALACIONES_FIELDS.id_materia]}</td>
-                <td>${a[ASIGNACION_INSTALACIONES_FIELDS.dia_semana] || '-'}</td>
+                <td>${a.id_instalacion || '-'}</td>
+                <td>${a.id_materia || '-'}</td>
+                <td>${a.dia_semana || '-'}</td>
                 <td>${a.hora_inicio || '-'}</td>
                 <td>${a.hora_fin || '-'}</td>
-                <td>${a[ASIGNACION_INSTALACIONES_FIELDS.id_persona] || '-'}</td>
+                <td>${a.id_persona || '-'}</td>
+                <td>${getEstado(a)}</td>
+                <td>${getCreatedAt(a)}</td>
+                <td>${getUpdatedAt(a)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -414,9 +454,12 @@ async function userLoadBloques() {
         tbody.innerHTML = bloques.map(b => `
             <tr>
                 <td>${b.id_bloque}</td>
-                <td>${b[BLOQUES_FIELDS.nombre]}</td>
-                <td>${b[BLOQUES_FIELDS.descripcion] || '-'}</td>
-                <td>${b[BLOQUES_FIELDS.id_campus]}</td>
+                <td>${b.nombre || '-'}</td>
+                <td>${b.descripcion || '-'}</td>
+                <td>${b.id_campus}</td>
+                <td>${getEstado(b)}</td>
+                <td>${getCreatedAt(b)}</td>
+                <td>${getUpdatedAt(b)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -448,8 +491,11 @@ async function userLoadAreasFuncionales() {
         tbody.innerHTML = areas.map(a => `
             <tr>
                 <td>${a.id_area}</td>
-                <td>${a[AREAS_FUNCIONALES_FIELDS.nombre_area]}</td>
-                <td>${a[AREAS_FUNCIONALES_FIELDS.descripcion] || '-'}</td>
+                <td>${a.nombre_area || a.nombre || '-'}</td>
+                <td>${a.descripcion || '-'}</td>
+                <td>${getEstado(a)}</td>
+                <td>${getCreatedAt(a)}</td>
+                <td>${getUpdatedAt(a)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -481,10 +527,13 @@ async function userLoadHorariosInstalacion() {
         tbody.innerHTML = horarios.map(h => `
             <tr>
                 <td>${h.id_horario || h.id || '-'}</td>
-                <td>${h[HORARIOS_INSTALACION_FIELDS.id_instalacion] || '-'}</td>
-                <td>${h[HORARIOS_INSTALACION_FIELDS.dia_semana] || '-'}</td>
-                <td>${h[HORARIOS_INSTALACION_FIELDS.hora_apertura] || '-'}</td>
-                <td>${h[HORARIOS_INSTALACION_FIELDS.hora_cierre] || '-'}</td>
+                <td>${h.id_instalacion || '-'}</td>
+                <td>${h.dia_semana || '-'}</td>
+                <td>${h.hora_apertura || '-'}</td>
+                <td>${h.hora_cierre || '-'}</td>
+                <td>${getEstado(h)}</td>
+                <td>${getCreatedAt(h)}</td>
+                <td>${getUpdatedAt(h)}</td>
             </tr>
         `).join('');
     } catch (error) {
@@ -520,8 +569,11 @@ async function userLoadEstadoInstalacion() {
         tbody.innerHTML = estados.map(e => `
             <tr>
                 <td>${e.id_estado}</td>
-                <td>${e[ESTADO_INSTALACION_FIELDS.nombre_estado]}</td>
-                <td>${e[ESTADO_INSTALACION_FIELDS.descripcion] || '-'}</td>
+                <td>${e.nombre_estado || '-'}</td>
+                <td>${e.descripcion || '-'}</td>
+                <td>${getEstado(e)}</td>
+                <td>${getCreatedAt(e)}</td>
+                <td>${getUpdatedAt(e)}</td>
             </tr>
         `).join('');
         

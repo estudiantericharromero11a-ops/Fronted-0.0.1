@@ -37,7 +37,10 @@ async function loadInstalaciones() {
                     <td>${instalacion[INSTALACIONES_FIELDS.capacidad] || '-'}</td>
                     <td>${instalacion[INSTALACIONES_FIELDS.id_bloque] || '-'}</td>
                     <td>${instalacion[INSTALACIONES_FIELDS.id_area] || '-'}</td>
-                    <td>${instalacion[INSTALACIONES_FIELDS.id_estado] || '-'}</td>
+                    <td>${getFieldValue(instalacion, 'id_estado') || '-'}</td>
+                    <td>${getEstado(instalacion)}</td>
+                    <td>${getCreatedAt(instalacion)}</td>
+                    <td>${getUpdatedAt(instalacion)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editInstalacion(${instalacion.id_instalacion})">
@@ -73,6 +76,9 @@ function showAddInstalacionModal() {
     // Limpiar formulario
     document.getElementById('instalacionForm').reset();
 
+    // Cargar estados
+    loadEstadosForInstalacion();
+
     // Mostrar el modal
     new bootstrap.Modal(document.getElementById('instalacionModal')).show();
 }
@@ -102,7 +108,9 @@ async function editInstalacion(id) {
         document.getElementById('instalacionPiso').value = instalacion[INSTALACIONES_FIELDS.piso];
         document.getElementById('instalacionIdBloque').value = instalacion[INSTALACIONES_FIELDS.id_bloque];
         document.getElementById('instalacionArea').value = instalacion[INSTALACIONES_FIELDS.id_area];
-        document.getElementById('instalacionIdEstado').value = instalacion[INSTALACIONES_FIELDS.id_estado];
+
+        // Cargar estados para el select
+        await loadEstadosForInstalacion(instalacion[INSTALACIONES_FIELDS.id_estado]);
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('instalacionModal')).show();
@@ -124,7 +132,7 @@ async function saveInstalacion() {
         const piso = document.getElementById('instalacionPiso').value;
         const idBloque = document.getElementById('instalacionIdBloque').value;
         const area = document.getElementById('instalacionArea').value;
-        const idEstado = document.getElementById('instalacionIdEstado').value;
+        const idEstado = document.getElementById('instalacionEstado').value;
 
         // Validar que campos requeridos no estén vacíos
         if (!nombre) {
@@ -140,7 +148,7 @@ async function saveInstalacion() {
             [INSTALACIONES_FIELDS.piso]: piso,
             [INSTALACIONES_FIELDS.id_bloque]: idBloque,
             [INSTALACIONES_FIELDS.id_area]: area,
-            [INSTALACIONES_FIELDS.id_estado]: idEstado
+            [INSTALACIONES_FIELDS.id_estado]: parseInt(idEstado)
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)
@@ -207,6 +215,33 @@ async function deleteInstalacion(id) {
     } catch (error) {
         console.error('Error al eliminar:', error);
         alert('Error al eliminar: ' + error.message);
+    }
+}
+
+// Función auxiliar para cargar estados en el select de instalaciones
+async function loadEstadosForInstalacion(selectedIdEstado = null) {
+    try {
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.estado_instalacion}/`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const estados = await response.json();
+        const select = document.getElementById('instalacionEstado');
+        select.innerHTML = '';
+
+        estados.forEach(estado => {
+            const option = document.createElement('option');
+            option.value = estado.id_estado;
+            option.textContent = estado.nombre_estado;
+            select.appendChild(option);
+        });
+
+        if (selectedIdEstado) {
+            select.value = selectedIdEstado;
+        }
+    } catch (error) {
+        console.error('Error al cargar estados para instalación:', error);
     }
 }
 

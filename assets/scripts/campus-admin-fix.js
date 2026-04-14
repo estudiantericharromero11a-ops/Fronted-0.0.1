@@ -73,7 +73,7 @@ async function loadCampusAdmin() {
         tbody.innerHTML = '';
 
         if (campus.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-warning">�️ No hay campus registrados</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center text-warning">�️ No hay campus registrados</td></tr>';
             return;
         }
 
@@ -81,6 +81,22 @@ async function loadCampusAdmin() {
             const nombre = getCampusField(campus_item, CAMPUS_FIELDS.nombre) || 'Sin nombre';
             const direccion = getCampusField(campus_item, CAMPUS_FIELDS.direccion) || '-';
             const descripcion = getCampusField(campus_item, CAMPUS_FIELDS.descripcion) || 'Sin descripción';
+            const estadoRaw = getEstado(campus_item);
+            const estado = estadoRaw !== '-' ? estadoRaw : formatEstado(campus_item.id_estado);
+            const creadoRaw = getCreatedAt(campus_item);
+            const creado = creadoRaw !== '-' ? creadoRaw :
+                displayValue(campus_item.created_at || campus_item.created || campus_item.fecha_creacion || campus_item.fechaCreacion);
+            const actualizadoRaw = getUpdatedAt(campus_item);
+            const actualizado = actualizadoRaw !== '-' ? actualizadoRaw :
+                displayValue(campus_item.updated_at || campus_item.updated || campus_item.fecha_actualizacion || campus_item.fechaActualizacion);
+
+            const auditMissing = !hasCampusAuditFields(campus_item) && estado === '-' && creado === '-' && actualizado === '-';
+            if (auditMissing) {
+                console.warn('[Campus-ALT] El backend no devuelve campos de auditoría para campus:', campus_item);
+            }
+            const displayedEstado = auditMissing ? 'No disponible' : estado;
+            const displayedCreated = auditMissing ? 'No disponible' : creado;
+            const displayedUpdated = auditMissing ? 'No disponible' : actualizado;
 
             const row = `
                 <tr>
@@ -88,6 +104,9 @@ async function loadCampusAdmin() {
                     <td>${nombre}</td>
                     <td>${direccion}</td>
                     <td>${descripcion}</td>
+                    <td>${displayedEstado}</td>
+                    <td>${displayedCreated}</td>
+                    <td>${displayedUpdated}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editCampus(${campus_item.id_campus})">
@@ -108,7 +127,7 @@ async function loadCampusAdmin() {
         console.error(' [ADMIN-ALT] Error:', error);
         const tbody = document.getElementById('campusTableBody');
         if (tbody) {
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger"> Error al cargar campus: ${error.message}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center text-danger"> Error al cargar campus: ${error.message}</td></tr>`;
         }
     }
 }

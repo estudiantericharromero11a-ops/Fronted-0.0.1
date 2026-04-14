@@ -38,6 +38,9 @@ async function loadHorariosInstalacion() {
                     <td>${horario[HORARIOS_INSTALACION_FIELDS.dia_semana] || 'N/A'}</td>
                     <td>${horario[HORARIOS_INSTALACION_FIELDS.hora_apertura] || 'N/A'}</td>
                     <td>${horario[HORARIOS_INSTALACION_FIELDS.hora_cierre] || 'N/A'}</td>
+                    <td>${getEstado(horario)}</td>
+                    <td>${getCreatedAt(horario)}</td>
+                    <td>${getUpdatedAt(horario)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editHorarioInstalacion(${idField})">
@@ -104,6 +107,7 @@ async function editHorarioInstalacion(id) {
         // los campos de hora se renombraron para coincidir con la BD
         document.getElementById('horarioInstalacionHoraApertura').value = horario[HORARIOS_INSTALACION_FIELDS.hora_apertura];
         document.getElementById('horarioInstalacionHoraCierre').value = horario[HORARIOS_INSTALACION_FIELDS.hora_cierre];
+        document.getElementById('horarioInstalacionEstado').value = horario[HORARIOS_INSTALACION_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('horarioInstalacionModal')).show();
@@ -123,6 +127,7 @@ async function saveHorarioInstalacion() {
         const dia_semana = document.getElementById('horarioInstalacionDiaSemana').value;
         const hora_apertura = document.getElementById('horarioInstalacionHoraApertura').value;
         const hora_cierre = document.getElementById('horarioInstalacionHoraCierre').value;
+        const estado = document.getElementById('horarioInstalacionEstado').value;
 
         // Validar que campos requeridos no estén vacíos
         if (!id_instalacion || !dia_semana || !hora_apertura || !hora_cierre) {
@@ -135,7 +140,8 @@ async function saveHorarioInstalacion() {
             [HORARIOS_INSTALACION_FIELDS.id_instalacion]: parseInt(id_instalacion),
             [HORARIOS_INSTALACION_FIELDS.dia_semana]: dia_semana,
             [HORARIOS_INSTALACION_FIELDS.hora_apertura]: hora_apertura,
-            [HORARIOS_INSTALACION_FIELDS.hora_cierre]: hora_cierre
+            [HORARIOS_INSTALACION_FIELDS.hora_cierre]: hora_cierre,
+            [HORARIOS_INSTALACION_FIELDS.estado]: estado === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

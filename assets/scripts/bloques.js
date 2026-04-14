@@ -15,6 +15,17 @@ async function loadBloques() {
         // Convertir respuesta JSON a datos JavaScript
         const bloques = await response.json();
 
+        // DEBUG: Ver qué estructura tiene el primer elemento
+        if (bloques.length > 0) {
+            console.log('🔍 BLOQUES - Primer elemento:', bloques[0]);
+            console.log('🔍 BLOQUES - Keys del objeto:', Object.keys(bloques[0]));
+            console.log('🔍 BLOQUES - Helper:', {
+                estado: getEstado(bloques[0]),
+                created_at: getCreatedAt(bloques[0]),
+                updated_at: getUpdatedAt(bloques[0])
+            });
+        }
+
         // Encontrar tabla en HTML (por ID)
         const tbody = document.getElementById('bloquesTableBody');
         if (!tbody) {
@@ -27,13 +38,15 @@ async function loadBloques() {
 
         // RECORRER cada bloque de PostgreSQL
         bloques.forEach(bloque => {
-            // Crear UNA fila de tabla para este bloque
             const row = `
                 <tr>
                     <td>${bloque.id_bloque}</td>
-                    <td>${bloque[BLOQUES_FIELDS.nombre]}</td>
-                    <td>${bloque[BLOQUES_FIELDS.descripcion] || '-'}</td>
-                    <td>${bloque[BLOQUES_FIELDS.id_campus]}</td>
+                    <td>${bloque.nombre || '-'}</td>
+                    <td>${bloque.descripcion || '-'}</td>
+                    <td>${bloque.id_campus}</td>
+                    <td>${getEstado(bloque)}</td>
+                    <td>${getCreatedAt(bloque)}</td>
+                    <td>${getUpdatedAt(bloque)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editBloque(${bloque.id_bloque})">
@@ -95,6 +108,7 @@ async function editBloque(id) {
         document.getElementById('bloqueNombre').value = bloque[BLOQUES_FIELDS.nombre];
         document.getElementById('bloqueDescripcion').value = bloque[BLOQUES_FIELDS.descripcion];
         document.getElementById('bloqueIdCampus').value = bloque[BLOQUES_FIELDS.id_campus];
+        document.getElementById('bloqueEstado').value = bloque[BLOQUES_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('bloqueModal')).show();
@@ -124,7 +138,8 @@ async function saveBloque() {
         const bloque = {
             [BLOQUES_FIELDS.nombre]: nombre,
             [BLOQUES_FIELDS.descripcion]: descripcion,
-            [BLOQUES_FIELDS.id_campus]: parseInt(id_campus)
+            [BLOQUES_FIELDS.id_campus]: parseInt(id_campus),
+            [BLOQUES_FIELDS.estado]: document.getElementById('bloqueEstado').value === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

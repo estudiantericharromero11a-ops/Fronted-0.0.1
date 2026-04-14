@@ -15,6 +15,17 @@ async function loadPersonaRol() {
         // Convertir respuesta JSON a datos JavaScript
         const asignaciones = await response.json();
 
+        // DEBUG: Ver qué estructura tiene el primer elemento
+        if (asignaciones.length > 0) {
+            console.log('🔍 PERSONA_ROL - Primer elemento:', asignaciones[0]);
+            console.log('🔍 PERSONA_ROL - Keys del objeto:', Object.keys(asignaciones[0]));
+            console.log('🔍 PERSONA_ROL - Helper:', {
+                estado: getEstado(asignaciones[0]),
+                created_at: getCreatedAt(asignaciones[0]),
+                updated_at: getUpdatedAt(asignaciones[0])
+            });
+        }
+
         // Encontrar tabla en HTML (por ID)
         const tbody = document.getElementById('personaRolTableBody');
         if (!tbody) {
@@ -30,15 +41,17 @@ async function loadPersonaRol() {
             // Crear UNA fila de tabla para esta asignación
             const row = `
                 <tr>
-                    <td>${asignacion[PERSONA_ROL_FIELDS.id_persona]}</td>
-                    <td>${asignacion[PERSONA_ROL_FIELDS.id_rol]}</td>
+                    <td>${asignacion.id_persona}</td>
+                    <td>${asignacion.id_rol}</td>
+                    <td>${getCreatedAt(asignacion)}</td>
+                    <td>${getUpdatedAt(asignacion)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
-                                onclick="editPersonaRol(${asignacion.id_persona_rol})">
+                                onclick="editPersonaRol(${asignacion.id_persona}, ${asignacion.id_rol})">
                             Editar
                         </button>
                         <button class="btn btn-sm btn-danger"
-                                onclick="deletePersonaRol(${asignacion.id_persona_rol})">
+                                onclick="deletePersonaRol(${asignacion.id_persona}, ${asignacion.id_rol})">
                             Borrar
                         </button>
                     </td>
@@ -73,11 +86,11 @@ function showAddPersonaRolModal() {
 
 // CRUD COMPLETO
 // EDITAR: Cargar datos de PostgreSQL en el formulario
-async function editPersonaRol(id) {
+async function editPersonaRol(personaId, rolId) {
     try {
 
         // Traer los datos de PostgreSQL
-        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/${id}/`);
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/${personaId}/${rolId}/`);
         if (!response.ok) {
             const errText = await response.text();
             throw new Error(`HTTP ${response.status}: ${errText}`);
@@ -89,7 +102,7 @@ async function editPersonaRol(id) {
         document.getElementById('personaRolModalTitle').textContent = 'Editar Asignación Rol';
 
         // Llenar formulario con datos de PostgreSQL
-        document.getElementById('personaRolId').value = asignacion.id_persona_rol;
+        document.getElementById('personaRolId').value = `${asignacion[PERSONA_ROL_FIELDS.id_persona]}-${asignacion[PERSONA_ROL_FIELDS.id_rol]}`;
         document.getElementById('personaRolIdPersona').value = asignacion[PERSONA_ROL_FIELDS.id_persona];
         document.getElementById('personaRolIdRol').value = asignacion[PERSONA_ROL_FIELDS.id_rol];
 
@@ -122,17 +135,33 @@ async function savePersonaRol() {
             [PERSONA_ROL_FIELDS.id_rol]: parseInt(id_rol)
         };
 
-        // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)
-        const isCreating = !id;  // Si no tiene ID, es nuevo
-        const method = isCreating ? 'POST' : 'PUT';
-        const url = isCreating ?
-            `${API_BASE}/${API_ENDPOINTS.persona_rol}/` :
-            `${API_BASE}/${API_ENDPOINTS.persona_rol}/${id}/`;
+        // Decidir si es CREAR (POST) o ACTUALIZAR (DELETE + POST)
+        const originalId = id;
+        const isCreating = !originalId;  // Si no tiene ID, es nuevo
+        const parsedPersonaId = parseInt(id_persona, 10);
+        const parsedRolId = parseInt(id_rol, 10);
 
+        if (!isCreating) {
+            const [oldPersonaId, oldRolId] = originalId.split('-').map(Number);
+            if (oldPersonaId !== parsedPersonaId || oldRolId !== parsedRolId) {
+                const deleteResponse = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/${oldPersonaId}/${oldRolId}/`, {
+                    method: 'DELETE'
+                });
+                if (!deleteResponse.ok) {
+                    const errText = await deleteResponse.text();
+                    throw new Error(`Error al eliminar asignación anterior: ${errText}`);
+                }
+            } else {
+                // Si no cambió la clave compuesta, recargar sin modificar la DB
+                bootstrap.Modal.getInstance(document.getElementById('personaRolModal')).hide();
+                await loadPersonaRol();
+                return;
+            }
+        }
 
-        // Enviar a API REST
-        const response = await fetch(url, {
-            method: method,
+        // Crear nueva asignación
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -160,16 +189,15 @@ async function savePersonaRol() {
 }
 
 // BORRAR: Eliminar de PostgreSQL
-async function deletePersonaRol(id) {
+async function deletePersonaRol(personaId, rolId) {
     try {
         // Pedir confirmación al usuario
         if (!confirm('¿Realmente quieres eliminar esta asignación de rol de la base de datos?')) {
             return;
         }
 
-
         // Enviar solicitud DELETE a la API
-        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/${id}/`, {
+        const response = await fetch(`${API_BASE}/${API_ENDPOINTS.persona_rol}/${personaId}/${rolId}/`, {
             method: 'DELETE'
         });
 

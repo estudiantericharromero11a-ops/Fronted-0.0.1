@@ -51,6 +51,17 @@ async function loadCampus() {
         // Convertir respuesta JSON a datos JavaScript
         const campus = await response.json();
 
+        // DEBUG: Ver qué estructura tiene el primer elemento
+        if (campus.length > 0) {
+            console.log('🔍 CAMPUS - Primer elemento:', campus[0]);
+            console.log('🔍 CAMPUS - Keys del objeto:', Object.keys(campus[0]));
+            console.log('🔍 CAMPUS - Helper:', {
+                estado: getEstado(campus[0]),
+                created_at: getCreatedAt(campus[0]),
+                updated_at: getUpdatedAt(campus[0])
+            });
+        }
+
         // Encontrar tabla en HTML (por ID)
         const tbody = document.getElementById('campusTableBody');
         if (!tbody) {
@@ -64,20 +75,31 @@ async function loadCampus() {
 
         // RECORRER cada campus de PostgreSQL
         campus.forEach(campus_item => {
+            const estadoValue = getEstado(campus_item) !== '-' ? getEstado(campus_item) :
+                formatEstado(campus_item.id_estado);
+            const createdValue = getCreatedAt(campus_item) !== '-' ? getCreatedAt(campus_item) :
+                displayValue(campus_item.created_at || campus_item.created || campus_item.fecha_creacion || campus_item.fechaCreacion);
+            const updatedValue = getUpdatedAt(campus_item) !== '-' ? getUpdatedAt(campus_item) :
+                displayValue(campus_item.updated_at || campus_item.updated || campus_item.fecha_actualizacion || campus_item.fechaActualizacion);
 
-            // Obtener valores de campos con fallback si el nombre cambia
-            const nombre = getCampusField(campus_item, CAMPUS_FIELDS.nombre) || 'Sin nombre';
-            const direccion = getCampusField(campus_item, CAMPUS_FIELDS.direccion) || '-';
-            const descripcion = getCampusField(campus_item, CAMPUS_FIELDS.descripcion);
+            const auditMissing = !hasCampusAuditFields(campus_item) && estadoValue === '-' && createdValue === '-' && updatedValue === '-';
+            if (auditMissing) {
+                console.warn('[Campus] El backend no devuelve campos de auditoría para campus:', campus_item);
+            }
 
+            const displayedEstado = auditMissing ? 'No disponible' : estadoValue;
+            const displayedCreated = auditMissing ? 'No disponible' : createdValue;
+            const displayedUpdated = auditMissing ? 'No disponible' : updatedValue;
 
-            // Crear UNA fila de tabla para este campus
             const row = `
                 <tr>
                     <td>${campus_item.id_campus}</td>
-                    <td>${nombre}</td>
-                    <td>${direccion}</td>
-                    <td>${descripcion || 'Sin descripción'}</td>
+                    <td>${campus_item.nombre}</td>
+                    <td>${campus_item.direccion || '-'}</td>
+                    <td>${campus_item.descripcion || '-'}</td>
+                    <td>${displayedEstado}</td>
+                    <td>${displayedCreated}</td>
+                    <td>${displayedUpdated}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editCampus(${campus_item.id_campus})">
@@ -90,8 +112,6 @@ async function loadCampus() {
                     </td>
                 </tr>
             `;
-
-            // Agregar la fila a la tabla
             tbody.innerHTML += row;
         });
 
@@ -141,6 +161,7 @@ async function editCampus(id) {
         document.getElementById('campusNombre').value = getCampusField(campus_item, CAMPUS_FIELDS.nombre) || '';
         document.getElementById('campusDireccion').value = getCampusField(campus_item, CAMPUS_FIELDS.direccion) || '';
         document.getElementById('campusDescripcion').value = getCampusField(campus_item, CAMPUS_FIELDS.descripcion) || '';
+        document.getElementById('campusEstado').value = campus_item[CAMPUS_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('campusModal')).show();
@@ -170,7 +191,8 @@ async function saveCampus() {
         const campus_item = {
             [CAMPUS_FIELDS.nombre]: nombre,
             [CAMPUS_FIELDS.direccion]: direccion,
-            [CAMPUS_FIELDS.descripcion]: descripcion
+            [CAMPUS_FIELDS.descripcion]: descripcion,
+            [CAMPUS_FIELDS.estado]: document.getElementById('campusEstado').value === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

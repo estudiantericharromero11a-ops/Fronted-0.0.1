@@ -21,10 +21,13 @@ async function loadProgramas() {
         programas.forEach(programa => {
             const row = `
                 <tr>
-                    <td>${programa.id_programa}</td>
-                    <td>${programa[PROGRAMAS_FIELDS.nombre]}</td>
-                    <td>${programa[PROGRAMAS_FIELDS.tipo_programa] || '-'}</td>
-                    <td>${programa[PROGRAMAS_FIELDS.duracion_semestres] || 0} semestres</td>
+                    <td>${getFieldValue(programa, 'id_programa')}</td>
+                    <td>${getFieldValue(programa, 'nombre')}</td>
+                    <td>${getFieldValue(programa, 'tipo_programa') || '-'}</td>
+                    <td>${getFieldValue(programa, 'duracion_semestres') || 0} semestres</td>
+                    <td>${getEstado(programa)}</td>
+                    <td>${getCreatedAt(programa)}</td>
+                    <td>${getUpdatedAt(programa)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editPrograma(${programa.id_programa})">Editar</button>
@@ -66,6 +69,7 @@ async function editPrograma(id) {
         document.getElementById('programaNombre').value = programa[PROGRAMAS_FIELDS.nombre];
         document.getElementById('programaTipo').value = programa[PROGRAMAS_FIELDS.tipo_programa];
         document.getElementById('programaDuracion').value = programa[PROGRAMAS_FIELDS.duracion_semestres];
+        document.getElementById('programaEstado').value = programa[PROGRAMAS_FIELDS.estado] ? 'true' : 'false';
 
         new bootstrap.Modal(document.getElementById('programaModal')).show();
 
@@ -93,7 +97,8 @@ async function savePrograma() {
         const programa = {
             [PROGRAMAS_FIELDS.nombre]: nombre,
             [PROGRAMAS_FIELDS.tipo_programa]: tipo,
-            [PROGRAMAS_FIELDS.duracion_semestres]: parseInt(duracion) || 0
+            [PROGRAMAS_FIELDS.duracion_semestres]: parseInt(duracion) || 0,
+            [PROGRAMAS_FIELDS.estado]: document.getElementById('programaEstado').value === 'true'
         };
 
         const isCreating = !id;

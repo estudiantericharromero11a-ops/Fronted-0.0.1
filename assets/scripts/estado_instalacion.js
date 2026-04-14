@@ -32,8 +32,10 @@ async function loadEstadoInstalacion() {
                 <tr>
                     <td>${estado.id_estado}</td>
                     <td>${estado[ESTADO_INSTALACION_FIELDS.nombre_estado]}</td>
-                    <td>${estado[ESTADO_INSTALACION_FIELDS.descripcion] || '-'}</td>
-                    
+                    <td>${getFieldValue(estado, 'descripcion') || '-'}</td>
+                    <td>${getEstado(estado)}</td>
+                    <td>${getCreatedAt(estado)}</td>
+                    <td>${getUpdatedAt(estado)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editEstadoInstalacion(${estado.id_estado})">
@@ -94,7 +96,7 @@ async function editEstadoInstalacion(id) {
         document.getElementById('estadoInstalacionId').value = estado.id_estado;
         document.getElementById('estadoInstalacionNombre').value = estado[ESTADO_INSTALACION_FIELDS.nombre_estado];
         document.getElementById('estadoInstalacionDescripcion').value = estado[ESTADO_INSTALACION_FIELDS.descripcion];
-
+        document.getElementById('estadoInstalacionEstado').value = estado[ESTADO_INSTALACION_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('estadoInstalacionModal')).show();
@@ -112,6 +114,7 @@ async function saveEstadoInstalacion() {
         const id = document.getElementById('estadoInstalacionId').value;
         const nombre = document.getElementById('estadoInstalacionNombre').value;
         const descripcion = document.getElementById('estadoInstalacionDescripcion').value;
+        const estadoValue = document.getElementById('estadoInstalacionEstado').value;
 
         // Validar que campos requeridos no estén vacíos
         if (!nombre) {
@@ -122,7 +125,8 @@ async function saveEstadoInstalacion() {
         // Crear objeto con formato PostgreSQL
         const estado = {
             [ESTADO_INSTALACION_FIELDS.nombre_estado]: nombre,
-            [ESTADO_INSTALACION_FIELDS.descripcion]: descripcion
+            [ESTADO_INSTALACION_FIELDS.descripcion]: descripcion,
+            [ESTADO_INSTALACION_FIELDS.estado]: estadoValue === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)

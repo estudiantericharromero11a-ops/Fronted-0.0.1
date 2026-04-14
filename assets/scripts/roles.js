@@ -32,7 +32,10 @@ async function loadRoles() {
                 <tr>
                     <td>${rol.id_rol}</td>
                     <td>${rol[ROLES_FIELDS.nombre_rol]}</td>
-                    <td>${rol[ROLES_FIELDS.descripcion] || '-'}</td>
+                    <td>${getFieldValue(rol, 'descripcion') || '-'}</td>
+                    <td>${getEstado(rol)}</td>
+                    <td>${getCreatedAt(rol)}</td>
+                    <td>${getUpdatedAt(rol)}</td>
                     <td>
                         <button class="btn btn-sm btn-warning"
                                 onclick="editRol(${rol.id_rol})">
@@ -93,6 +96,7 @@ async function editRol(id) {
         document.getElementById('rolId').value = rol.id_rol;
         document.getElementById('rolNombre').value = rol[ROLES_FIELDS.nombre_rol];
         document.getElementById('rolDescripcion').value = rol[ROLES_FIELDS.descripcion];
+        document.getElementById('rolEstado').value = rol[ROLES_FIELDS.estado] ? 'true' : 'false';
 
         // Mostrar modal
         new bootstrap.Modal(document.getElementById('rolModal')).show();
@@ -120,7 +124,8 @@ async function saveRol() {
         // Crear objeto con formato PostgreSQL
         const rol = {
             [ROLES_FIELDS.nombre_rol]: nombre,
-            [ROLES_FIELDS.descripcion]: descripcion
+            [ROLES_FIELDS.descripcion]: descripcion,
+            [ROLES_FIELDS.estado]: document.getElementById('rolEstado').value === 'true'
         };
 
         // Decidir si es CREAR (POST) o ACTUALIZAR (PUT)
