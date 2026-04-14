@@ -6,6 +6,217 @@ Un sistema de gestión universitaria desarrollado con tecnologías web frontend 
 
 Este proyecto es una interfaz de usuario completa para un sistema de gestión universitaria que permite a administradores y usuarios consultar y gestionar información relacionada con entidades académicas. El sistema está dividido en tres interfaces principales: login, panel de administrador y panel de usuario, cada uno con funcionalidades específicas adaptadas a los roles.
 
+## Arquitectura General del Sistema
+
+El sistema universitario completo consta de tres componentes principales:
+
+### 1. Frontend (Este Proyecto)
+- **Interfaz Web**: HTML/CSS/JavaScript puro con Bootstrap
+- **Autenticación JWT**: Login seguro con tokens
+- **Gestión CRUD**: Operaciones completas para administradores
+- **Consulta de Datos**: Vista de solo lectura para usuarios
+- **Agente de IA**: Interfaz integrada para consultas inteligentes
+
+### 2. Backend API REST
+- **Base de Datos**: PostgreSQL con pgvector para IA
+- **API RESTful**: Endpoints para todas las entidades
+- **Autenticación**: Validación de JWT tokens
+- **Consultas SQL**: Generación automática desde lenguaje natural
+
+### 3. Sistema de IA (THANIA IA)
+- **Procesamiento de Lenguaje Natural**: Conversión de consultas en SQL
+- **Embeddings Vectoriales**: Búsqueda semántica en la base de datos
+- **Modelos de IA**: Transformers y Sentence Transformers
+- **Integración**: Conexión directa con el backend
+
+## Guía Completa de Instalación y Configuración
+
+### Prerrequisitos del Sistema
+- **Python 3.8+**: Para el backend y servidor local
+- **PostgreSQL 12+**: Base de datos con extensión pgvector
+- **Node.js** (opcional): Para desarrollo avanzado
+- **Navegador Moderno**: Chrome 60+, Firefox 55+, Edge 79+
+
+### Paso 1: Preparar el Entorno
+
+#### Instalar Python y Dependencias
+```bash
+# Verificar Python
+python --version
+
+# Instalar dependencias del backend (si tienes el proyecto backend)
+pip install -r requirements.txt
+```
+
+#### Configurar PostgreSQL
+```sql
+-- Crear base de datos
+CREATE DATABASE universidad_db;
+
+-- Instalar extensión pgvector
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Crear usuario para la aplicación
+CREATE USER app_user WITH PASSWORD 'tu_password_seguro_aqui';
+GRANT ALL PRIVILEGES ON DATABASE universidad_db TO app_user;
+```
+
+### Paso 2: Configurar el Backend
+
+#### Clonar y Configurar Backend
+```bash
+# Clonar el proyecto backend (THANIA IA)
+git clone <url-backend-repo>
+cd thania-ia-backend
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Configurar variables de entorno
+cp .env.example .env
+# Editar .env con tus configuraciones de BD y credenciales seguras
+```
+
+#### Ejecutar Migraciones de Base de Datos
+```bash
+# Ejecutar script de inicialización de BD
+python scripts/init_database.py
+
+# Verificar instalación
+python scripts/verify_versions.py
+```
+
+#### Iniciar el Backend
+```bash
+# Opción 1: Desarrollo
+python app.py
+
+# Opción 2: Producción con Gunicorn
+gunicorn -w 4 -b 0.0.0.0:8000 app:app
+```
+
+### Paso 3: Configurar el Frontend
+
+#### Clonar y Preparar Frontend
+```bash
+# Clonar este proyecto frontend
+git clone <url-frontend-repo>
+cd "Fronted 1.2.2"
+
+# Verificar estructura
+ls -la
+```
+
+#### Configurar Conexión con Backend
+```javascript
+// En assets/scripts/config.js
+const API_PORTS = [8000, 8001, 8002, 8003, 8004]; // Puertos donde corre el backend
+const API_HOST = 'http://127.0.0.1';
+```
+
+#### Iniciar Servidor Frontend
+```bash
+# Opción 1: Usando el script incluido
+./start_frontend.bat
+
+# Opción 2: Python manual
+python -m http.server 3000
+
+# Opción 3: Node.js
+npx http-server -p 3000
+```
+
+### Paso 4: Verificar Conexiones
+
+#### Probar Backend Independiente
+```bash
+# Verificar que el backend responde
+curl http://localhost:8000/personas/
+
+# Probar autenticación
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"tu_password_admin"}'
+```
+
+#### Probar Frontend Independiente
+- Abrir `http://localhost:3000/index.html` en el navegador
+- Verificar que carga sin errores de red
+- Intentar login (debería fallar si backend no está corriendo)
+
+#### Probar Integración Completa
+1. **Backend corriendo** en puerto 8000
+2. **Frontend corriendo** en puerto 3000
+3. **Abrir** `http://localhost:3000/index.html`
+4. **Login exitoso** → Redirección automática según rol
+5. **Funciones CRUD** → Operaciones en base de datos
+6. **Agente IA** → Consultas en lenguaje natural
+
+### Paso 5: Configurar el Sistema de IA
+
+#### Preparar Modelos de IA
+```bash
+# El backend debería descargar modelos automáticamente
+# Verificar en logs del backend:
+# - sentence-transformers modelo cargado
+# - Ollama disponible (opcional)
+```
+
+#### Probar Consultas de IA
+```bash
+# Desde el frontend: acceder a aiagent.html
+# Probar consultas como:
+# "Mostrar todas las personas"
+# "Cuántos estudiantes hay por programa"
+# "Profesores con más horas de clase"
+```
+
+## Funcionamiento Integrado del Sistema
+
+### Flujo de Datos Completo
+
+1. **Usuario accede** → `http://localhost:3000/index.html`
+2. **Login** → Frontend envía credenciales al backend
+3. **Backend valida** → Consulta PostgreSQL con hash bcrypt
+4. **JWT generado** → Token devuelto al frontend
+5. **Sesión activa** → Frontend almacena token en localStorage
+6. **Navegación** → Auth-guard verifica token en cada página
+7. **Operaciones CRUD** → Frontend ↔ Backend ↔ PostgreSQL
+8. **Consultas IA** → Lenguaje natural → SQL → Resultados
+
+### Roles y Permisos
+
+- **Administrador** (`admin`):
+  - Acceso completo a CRUD
+  - Gestión de usuarios y roles
+  - Configuración del sistema
+  - Panel: `admin.html`
+
+- **Usuario** (`user`):
+  - Solo lectura de datos
+  - Consultas limitadas
+  - Panel: `user.html`
+
+- **Agente IA** (`aiagent`):
+  - Consultas inteligentes
+  - Generación automática de SQL
+  - Panel: `aiagent.html`
+
+### Seguridad y Credenciales
+
+**⚠️ IMPORTANTE**: Antes de usar el sistema en producción:
+
+1. **Cambia todas las contraseñas por defecto** en la base de datos
+2. **Configura variables de entorno** para credenciales sensibles
+3. **Usa contraseñas fuertes** para usuarios admin
+4. **Configura HTTPS** en producción
+5. **Revisa permisos de base de datos** según el principio de menor privilegio
+
+**Ejemplo de usuarios iniciales** (cambiar contraseñas):
+- `admin` / `tu_password_seguro_admin`
+- `user` / `tu_password_seguro_user`
+- `aiagent` / `tu_password_seguro_aiagent`
+
 ## Funcionamiento del Sistema
 
 ### Flujo de Usuario
@@ -61,6 +272,8 @@ Este proyecto es una interfaz de usuario completa para un sistema de gestión un
 ```
 Fronted 1.2.2/
 ├── README.md                    # Documentación del proyecto
+├── .env.example                 # Variables de entorno (plantilla)
+├── .gitignore                   # Archivos a ignorar en Git
 ├── admin.html                   # Panel principal de administración
 ├── index.html                   # Página de inicio y login
 ├── user.html                    # Panel de consulta para usuarios
@@ -349,6 +562,8 @@ El sistema se comunica con un backend RESTful API. Endpoints documentados:
 - Application tab para localStorage/sessionStorage si aplica
 
 ## Contribución
+
+**⚠️ SEGURIDAD**: Nunca commiteas archivos `.env` con credenciales reales. Usa `.env.example` como plantilla.
 
 1. Fork el proyecto
 2. Crea una rama descriptiva (`git checkout -b feature/nueva-funcionalidad`)
